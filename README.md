@@ -8,9 +8,6 @@ dos anos 2000.
 
 ![MSN](frontend/images/logomsn.png)
 
-Este README cobre só **instalação e execução**. Protocolo, decisões de
-projeto e demais detalhes técnicos estão no relatório.
-
 ## 📖 Sobre o projeto
 
 O projeto implementa, do zero, um sistema de chat cliente-servidor real: o
