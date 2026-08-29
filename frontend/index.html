@@ -1,0 +1,3485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protótipo MSN - Fundo</title>
+    <style>
+        /* ================================================================
+           1. BASE E TELA DE LOGIN
+           ================================================================ */
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #e5e7eb; /* cinza claro atrás da janela do app */
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #app-container {
+            /* Formato mais horizontal */
+            width: 750px;
+            height: 500px;
+            
+            /* Degradê ajustado: azul na ponta, áreas claras esbranquiçadas, azul no meio */
+            background: linear-gradient(
+                to bottom, 
+                #d4e0ee 0%,      
+                #f0f5fa 12%,     
+                #f0f5fa 35%,     
+                #dbe5f0 55%,     
+                #eef4fa 85%,     
+                #ebf2f9 100%     
+            );
+            /* Borda levemente mais definida e sombra interna clara para dar relevo à janela */
+            border: 1px solid #627ea1;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden; 
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .top-left-menu-icon {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            /* Relevo clássico: luz no topo, escurece até o meio, clareia embaixo + borda e brilho interno */
+            background: linear-gradient(to bottom, #ffffff 0%, #e6eff7 45%, #d1dced 50%, #ebf3fa 100%);
+            border: 1px solid #94a6be;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .top-left-menu-icon svg {
+            width: 9px;
+            height: 9px;
+        }
+
+        .msn-logo-top {
+            height: 18px;
+            width: auto;
+            object-fit: contain;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .msn-messenger-text {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            color: #003399; /* Azul escuro do MSN */
+            margin-left: 4px;
+            line-height: 18px;
+        }
+
+        .profile-header-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .profile-main-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-uploader {
+            width: 60px; 
+            height: 22px; 
+            border: 1px dashed #94a6be;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 10px;
+            color: #627ea1;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .logo-uploader:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            border-color: #003399;
+            color: #003399;
+        }
+
+        .avatar-area {
+            position: absolute;
+            top: 70px; /* Um pouco abaixo do cabeçalho */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+        }
+
+        .avatar-uploader {
+            width: 125px;
+            height: 125px;
+            background-color: #ffffff;
+            border: 2px solid #4ade80;
+            border-radius: 8px; /* Cantos arredondados clássicos */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #22c55e;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255,255,255,0.8);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .avatar-uploader:hover {
+            background-color: #f8fffb;
+        }
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a foto preencher todo o quadrado perfeitamente */
+        }
+
+        .login-form-area {
+            position: absolute;
+            top: 215px; /* Posicionado logo abaixo do avatar */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 240px; /* Largura total dos campos */
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Espaço entre os blocos de email e senha */
+        }
+
+        .input-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .msn-label {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            font-weight: 600; /* Um nível acima do regular para deixar a fonte mais "marcada" */
+            color: #0a246a; /* Azul mais escuro e marcado (clássico do XP/MSN) */
+            margin-bottom: 2px;
+        }
+
+        .input-row {
+            display: flex;
+            height: 22px;
+            gap: 2px;
+            align-items: stretch;
+        }
+
+        .msn-input {
+            flex: 1;
+            min-width: 0;
+            box-sizing: border-box;
+            height: 22px;
+            border: 1px solid #7f9db9;
+            padding: 0 4px;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            color: #000;
+            outline: none;
+        }
+
+        .msn-input:focus {
+            border-color: #003399; /* Escurece um pouco ao focar */
+        }
+
+        .msn-dropdown-btn {
+            width: 17px;
+            height: 22px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            border: 1px solid #7f9db9;
+            background: linear-gradient(to bottom, #ffffff 0%, #e3eef9 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .msn-dropdown-btn:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #d1e4f6 100%);
+        }
+
+        .msn-dropdown-btn svg {
+            width: 7px;
+            height: 4px;
+        }
+
+        /* Novas classes para o seletor de Status */
+        .status-row {
+            display: flex;
+            align-items: center;
+            margin-top: 4px; /* Espacinho logo abaixo do campo de senha */
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        .status-text {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: #0a246a;
+            margin-right: 4px; /* Espaço entre o texto e a setinha */
+        }
+
+        .status-arrow {
+            width: 7px;
+            height: 4px;
+        }
+
+        /* Novo container para colocar servidor e porta lado a lado */
+        .server-config-row {
+            display: flex;
+            gap: 8px; /* Espaço entre os dois campos */
+            margin-top: 8px; /* Espaço em relação à linha de cima */
+            width: 100%;
+        }
+
+        /* Botão de Entrar */
+        .login-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 24px; /* Espaço maior para separar bem dos campos */
+        }
+
+        .msn-login-btn {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #0a246a;
+            padding: 4px 24px;
+            border: 1px solid #11428a; /* Borda azul escura */
+            border-radius: 3px;
+            /* Degradê simulando plástico/vidro do botão padrão do Windows */
+            background: linear-gradient(to bottom, #ffffff 0%, #f0f2f5 45%, #e1e6eb 55%, #c8d3df 100%);
+            /* Destaque branco no topo e a famosa bordinha dourada embaixo */
+            box-shadow: inset 0 1px 1px rgba(255,255,255,1), inset 0 -2px 1px #e3c16f;
+            cursor: pointer;
+            user-select: none;
+            min-width: 140px;
+        }
+
+        .msn-login-btn:hover {
+            /* Efeito de brilho ao passar o mouse */
+            background: linear-gradient(to bottom, #ffffff 0%, #f4f6f8 45%, #e9edf1 55%, #d5dde6 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,1), inset 0 -2px 1px #f4d383, 0 0 3px rgba(0,0,0,0.2);
+        }
+
+        .msn-login-btn:active {
+            /* Efeito de clique afundando */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+            background: #c8d3df;
+        }
+
+        /* Nova área no canto inferior direito para os bonecos de fundo */
+        .bottom-right-area {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            width: 180px;
+            height: 160px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .figures-uploader {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 11px;
+            color: #627ea1;
+            transition: all 0.2s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1; /* Fica atrás do texto */
+        }
+
+        .figures-uploader:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: #003399;
+            color: #003399;
+        }
+
+        .signup-link {
+            position: absolute;
+            bottom: 35px; 
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            font-weight: 600; /* Mesmo estilo e peso dos campos */
+            color: #0a246a; /* Azul exato dos campos */
+            text-decoration: underline;
+            cursor: pointer;
+            z-index: 2; 
+        }
+
+        .signup-link:hover {
+            color: #ff6600; /* Efeito laranja clássico ao passar o mouse em links do MSN */
+        }
+
+        /* ================================================================
+           2. TELA DE CADASTRO
+           ================================================================ */
+        .signup-layout-wrapper {
+            position: absolute;
+            top: 70px; 
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px; /* Empurra o formulário para a direita */
+        }
+
+        .signup-left-uploader {
+            width: 180px;
+            height: 250px;
+            border: none;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 11px;
+            color: #627ea1;
+            transition: all 0.2s ease;
+        }
+
+        .signup-left-uploader:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            border-color: #003399;
+            color: #003399;
+        }
+
+        .signup-form-area {
+            width: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px; /* Ajuste para alinhar melhor visualmente com a imagem lateral */
+        }
+
+        .signup-title {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            color: #0a246a;
+            margin: 0;
+        }
+
+        .signup-subtitle {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            color: #666666;
+            margin: -8px 0 4px 0; /* Aproxima do título */
+        }
+
+        .error-msg {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            color: #d32f2f; /* Vermelho erro */
+            margin-top: -8px;
+            display: none; /* Escondido por padrão, controlado pelo JS */
+        }
+
+        .msn-link-center {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: #0a246a;
+            text-decoration: underline;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .msn-link-center:hover {
+            color: #ff6600;
+        }
+
+        /* ================================================================
+           3. TELA PRINCIPAL (LOGADO) — SIDEBAR E PAINEIS
+           ================================================================ */
+        .chat-top-left-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 35%;
+            height: 18%;
+            min-height: 68px;
+            border: 1px solid #d1d5db;
+            border-top: none;
+            border-left: none;
+            border-right: 1px solid #d1d5db;
+            border-bottom: 1px solid #d1d5db;
+            border-radius: 14px 14px 14px 14px;
+            background: linear-gradient(180deg, #dbe5f0 0%, #f7fbfe 22%, #eef4fa 50%, #f7fbfe 78%, #dbe5f0 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+            z-index: 2;
+        }
+
+        .chat-bottom-left-card {
+            position: absolute;
+            top: 18%;
+            left: 0;
+            width: 35%;
+            height: calc(100% - 18%);
+            min-height: 68px;
+            border: 1px solid #d1d5db;
+            border-top: none;
+            border-left: none;
+            border-right: 1px solid #d1d5db;
+            border-bottom: 1px solid #d1d5db;
+            border-radius: 14px 14px 14px 14px;
+            background: linear-gradient(180deg, #dbe5f0 0%, #f7fbfe 22%, #eef4fa 50%, #f7fbfe 78%, #dbe5f0 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .category-panel {
+            position: relative;
+            margin: 0;
+            padding: 2px 6px 2px 8px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            height: 100%;
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-height: calc(100% - 0px);
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
+            border: none;
+            color: #0f172a;
+            cursor: default;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            transition: none;
+        }
+
+        .category-item:hover {
+            background: transparent;
+        }
+
+        .sublist {
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+            margin: 0 0 0 22px;
+            padding: 0;
+            line-height: 1.1;
+        }
+
+        .category-item-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, #ffffff 0%, #e6eff7 45%, #d1dced 50%, #ebf3fa 100%);
+            border: 1px solid #94a6be;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .category-item-icon svg {
+            transition: transform 0.15s ease;
+        }
+
+        .category-item-icon.aberto svg {
+            transform: rotate(180deg);
+        }
+
+        .category-item-label {
+            color: #0b3d91;
+            font-weight: 600;
+            line-height: 1.1;
+        }
+
+        .category-item-count {
+            color: #0b3d91;
+            font-weight: 600;
+            font-size: inherit;
+            margin-left: 3px;
+        }
+
+        .fonte-menu-wrapper {
+            position: relative;
+            display: inline-flex;
+        }
+
+        .fonte-menu {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 4px;
+            width: 130px;
+            background: #fff;
+            border: 1px solid #7f9db9;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            padding: 6px;
+            z-index: 60;
+        }
+
+        .fonte-menu.open {
+            display: block;
+        }
+
+        .fonte-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 6px;
+            font-family: Tahoma, sans-serif;
+            font-size: 12px;
+            color: #1f2937;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .fonte-option:hover {
+            background: #eef4fb;
+        }
+
+        .fonte-check {
+            width: 12px;
+            display: inline-block;
+            color: #2f5fa8;
+            font-weight: bold;
+            visibility: hidden;
+        }
+
+        .fonte-option.ativo .fonte-check {
+            visibility: visible;
+        }
+
+        .sublist {
+            display: none;
+            margin-left: 20px;
+            margin-top: 0;
+            flex-direction: column;
+            gap: 0;
+            margin-bottom: 0;
+            padding-left: 0;
+            line-height: 1.1;
+        }
+
+        .sublist.active {
+            display: flex;
+        }
+
+        .person-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 2px 0;
+            border-radius: 0;
+            background: transparent;
+            border: none;
+            color: #0f172a;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            cursor: default;
+        }
+
+        .person-item img {
+            width: 18px;
+            height: 18px;
+            object-fit: cover;
+            border-radius: 0;
+        }
+
+        .room-entry,
+        .request-entry {
+            padding: 2px 0;
+            color: #0f172a;
+            background: transparent;
+            border: none;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .room-entry:not(.room-entry-locked),
+        .person-item {
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .room-entry:not(.room-entry-locked):hover,
+        .person-item:hover {
+            background: rgba(226, 232, 240, 0.5);
+        }
+
+        .room-entry-locked {
+            color: #64748b;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
+            border: none;
+            color: #0f172a;
+            cursor: pointer;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            transition: none;
+        }
+
+        .category-item:hover,
+        .category-item.active {
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .category-item img {
+            width: 16px;
+            height: 16px;
+            object-fit: cover;
+        }
+
+        .right-panel {
+            width: 65%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .category-content {
+            width: 100%;
+            height: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.82);
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            overflow: auto;
+            box-sizing: border-box;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            color: #0f172a;
+        }
+
+        .category-content-section {
+            display: none;
+        }
+
+        .category-content-section.active {
+            display: block;
+        }
+
+        .category-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #0b3d91;
+        }
+
+        .room-item,
+        .user-item,
+        .request-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #f8fbff;
+            border: 1px solid #d1d5db;
+            margin-bottom: 8px;
+        }
+
+        .room-item span,
+        .user-item span,
+        .request-item span {
+            font-size: 12px;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .request-button {
+            border: 1px solid #7f9db9;
+            border-radius: 2px;
+            padding: 1px 8px;
+            font-size: 11px;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            background: #dce8f8;
+            color: #000000;
+            box-shadow: 1px 1px 0px #ffffff inset;
+        }
+
+        .request-button:hover {
+            background: #c5d9f1;
+            border-color: #316ac5;
+        }
+
+        .request-button:active {
+            background: #b8cfe8;
+            box-shadow: none;
+        }
+
+        .approve-button {
+            background: #dce8f8;
+            color: #000000;
+        }
+
+        .reject-button {
+            background: #dce8f8;
+            color: #000000;
+        }
+
+        .main-screen-layout {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            gap: 12px;
+            align-items: flex-start;
+            box-sizing: border-box;
+        }
+
+        /* Painel esquerdo (Contatos e Perfil) */
+        .left-panel {
+            width: 35%; /* Painel de perfil reduzido para dar mais espaço ao chat */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #94a6be; /* Linha sutil separando do chat */
+            padding: 10px; /* Espaço para o retângulo não colar nas bordas */
+            box-sizing: border-box;
+        }
+
+        /* Painel direito (Onde será o Chat) */
+        .right-panel {
+            width: 65%; /* Área do chat aumentada */
+            min-width: 360px;
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            background-color: rgba(255, 255, 255, 0.3); /* Fundo um pouco mais claro para destacar a área */
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        /* ================================================================
+           4. JANELA DE CHAT (ESTILO CLÁSSICO MSN 2004)
+           ================================================================ */
+        .chat-window {
+            width: 100%;
+            max-width: 520px;
+            height: 100%;
+            padding: 6px;
+            background: #e4eefb; /* Fundo clássico azul claro do MSN */
+            border: 1px solid #7a96df;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: Tahoma, Geneva, sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .chat-header {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+        }
+
+        .chat-to-row {
+            background: transparent;
+            padding: 0 4px 4px 4px;
+            border-bottom: 1px solid #b7cce5;
+        }
+
+        .chat-to-label, .chat-to-value {
+            color: #333;
+            font-size: 11px;
+            font-weight: normal;
+        }
+
+        .chat-body {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            background: #ffffff;
+            border: 1px solid #8e9bb3;
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1 1 auto;
+            padding: 10px;
+            background: #ffffff;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+
+        /* Remoção dos balões modernos - Estilo texto limpo */
+        .chat-message-item {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 8px;
+            border-radius: 0;
+            display: block;
+        }
+
+        .chat-message-author {
+            color: #777;
+            font-size: 11px;
+            font-weight: normal;
+            display: block;
+        }
+
+        .chat-message-text {
+            color: #000;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin-top: 2px;
+            display: block;
+        }
+
+        .chat-historico-carregando {
+            color: #999;
+            font-style: italic;
+            font-size: 12px;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        /* Avisos globais em azul (desconexão, servidor cheio, erros de
+           conexão etc.) — aparecem por cima de qualquer tela */
+        #aviso-global-container {
+            position: fixed;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .aviso-global-toast {
+            background: #2f5fa8;
+            color: #fff;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            padding: 10px 18px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            max-width: 380px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .aviso-global-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chat-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 0; /* Barras coladas umas nas outras */
+            background: transparent;
+        }
+
+        .chat-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: linear-gradient(to bottom, #ffffff 0%, #e4eefb 100%);
+            border: 1px solid #8e9bb3;
+            border-bottom: none;
+            padding: 2px;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 18px;
+            background: #9cb2cf;
+            margin: 0 2px;
+        }
+
+        .toolbar-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            height: 22px;
+            padding: 0 4px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: #333;
+            font-family: Tahoma, Geneva, sans-serif;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .toolbar-button:hover {
+            border: 1px solid #000000;
+            background: #dce8f8;
+            border-radius: 2px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
+        }
+
+        .winks-menu-wrapper {
+            position: relative;
+            display: inline-flex;
+        }
+
+        .winks-menu {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 4px;
+            width: 250px;
+            max-height: 260px;
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid #7f9db9;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            padding: 8px;
+            z-index: 60;
+        }
+
+        .winks-menu.open {
+            display: block;
+        }
+
+        .winks-menu-title {
+            color: #2f5fa8;
+            text-decoration: underline;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Tahoma, sans-serif;
+            margin-bottom: 6px;
+        }
+
+        .winks-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .wink-thumb {
+            width: 52px;
+            height: 52px;
+            border: 1px solid #b6c6db;
+            border-radius: 2px;
+            background: #fff;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wink-thumb:hover {
+            border-color: #2f5fa8;
+            box-shadow: 0 0 0 1px #2f5fa8;
+        }
+
+        .wink-thumb embed {
+            pointer-events: none;
+            width: 52px;
+            height: 52px;
+        }
+
+        .emoticons-menu-wrapper {
+            position: relative;
+            display: inline-flex;
+        }
+
+        .emoticons-menu {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 4px;
+            width: 190px;
+            max-height: 220px;
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid #7f9db9;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            padding: 8px;
+            z-index: 60;
+        }
+
+        .emoticons-menu.open {
+            display: block;
+        }
+
+        .emoticons-menu-title {
+            color: #2f5fa8;
+            text-decoration: underline;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Tahoma, sans-serif;
+            margin-bottom: 6px;
+        }
+
+        .emoticons-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .emoticon-thumb {
+            width: 28px;
+            height: 28px;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoticon-thumb:hover {
+            border-color: #2f5fa8;
+            box-shadow: 0 0 0 1px #2f5fa8;
+        }
+
+        .emoticon-thumb img {
+            pointer-events: none;
+            width: 22px;
+            height: 22px;
+        }
+
+        .wink-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            align-items: center;
+            justify-content: center;
+            background: rgba(20, 30, 50, 0.18);
+            z-index: 200;
+        }
+
+        .wink-overlay.show {
+            display: flex;
+        }
+
+        .wink-overlay-box {
+            background: #fff;
+            border: 2px solid #2f5fa8;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 4px;
+            align-items: stretch;
+            background: transparent;
+            border: none;
+            padding: 0;
+            height: 60px; /* Área de digitação maior */
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #8e9bb3;
+            padding: 4px;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-size: 12px;
+            resize: none;
+            background: #ffffff;
+        }
+
+        .chat-actions {
+            width: 60px;
+        }
+
+        .chat-action-button {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #8e9bb3;
+            background: linear-gradient(to bottom, #ffffff 0%, #eceef4 100%);
+            color: #999; /* Texto cinza claro padrão */
+            font-family: Tahoma, Geneva, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 2px;
+            box-shadow: none;
+        }
+
+        .chat-action-button:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #dbe2f1 100%);
+            border-color: #316ac5;
+            color: #333;
+        }
+
+        .arquivo-pendente-bar {
+            display: none; /* vira 'flex' via JS quando um arquivo é escolhido */
+            align-items: center;
+            gap: 6px;
+            background: #eef3fc;
+            border: 1px solid #8e9bb3;
+            border-bottom: none;
+            padding: 4px 6px;
+            font-family: Tahoma, Geneva, sans-serif;
+            font-size: 11px;
+            color: #333;
+        }
+
+        #arquivo-pendente-nome {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .arquivo-pendente-btn {
+            border: 1px solid #8e9bb3;
+            background: linear-gradient(to bottom, #ffffff 0%, #eceef4 100%);
+            font-family: Tahoma, Geneva, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 2px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .arquivo-pendente-btn:hover {
+            border-color: #316ac5;
+            background: linear-gradient(to bottom, #ffffff 0%, #dbe2f1 100%);
+        }
+
+        .chat-status-footer {
+            background: #eef3fc;
+            border: 1px solid #8e9bb3;
+            border-top: none;
+            padding: 2px 6px;
+            font-family: Tahoma, Geneva, sans-serif;
+            font-size: 10px;
+            color: #555;
+        }
+
+        .user-profile-bar {
+            display: flex;
+            padding: 12px;
+            align-items: center;
+            gap: 12px;
+            background-color: #e4e8ec; 
+            border: 1px solid #94a6be; /* Borda agora em todos os lados */
+            border-radius: 12px; /* MUDANÇA: Todo arredondado, inclusive embaixo */
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .user-profile-avatar {
+            width: 48px;
+            height: 48px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            background-color: #ffffff;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,1), 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-header-tag {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            color: #003399;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .user-profile-name {
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        @keyframes nudge-shake {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            2%   { transform: translate(-40px, 15px) rotate(-5deg); }
+            4%   { transform: translate(40px, -15px) rotate(5deg); }
+            6%   { transform: translate(-45px, 20px) rotate(-6deg); }
+            8%   { transform: translate(45px, -20px) rotate(6deg); }
+            10%  { transform: translate(-40px, 15px) rotate(-5deg); }
+            12%  { transform: translate(40px, -15px) rotate(5deg); }
+            14%  { transform: translate(-45px, 20px) rotate(-6deg); }
+            16%  { transform: translate(45px, -20px) rotate(6deg); }
+            18%  { transform: translate(-40px, 15px) rotate(-5deg); }
+            20%  { transform: translate(40px, -15px) rotate(5deg); }
+            22%  { transform: translate(-45px, 20px) rotate(-6deg); }
+            24%  { transform: translate(45px, -20px) rotate(6deg); }
+            26%  { transform: translate(-40px, 15px) rotate(-5deg); }
+            28%  { transform: translate(40px, -15px) rotate(5deg); }
+            30%  { transform: translate(-45px, 20px) rotate(-6deg); }
+            32%  { transform: translate(45px, -20px) rotate(6deg); }
+            34%  { transform: translate(-40px, 15px) rotate(-5deg); }
+            36%  { transform: translate(40px, -15px) rotate(5deg); }
+            38%  { transform: translate(-45px, 20px) rotate(-6deg); }
+            40%  { transform: translate(45px, -20px) rotate(6deg); }
+            42%  { transform: translate(-40px, 15px) rotate(-5deg); }
+            44%  { transform: translate(40px, -15px) rotate(5deg); }
+            46%  { transform: translate(-30px, 10px) rotate(-4deg); }
+            48%  { transform: translate(30px, -10px) rotate(4deg); }
+            50%  { transform: translate(-30px, 10px) rotate(-4deg); }
+            52%  { transform: translate(30px, -10px) rotate(4deg); }
+            56%  { transform: translate(-20px, 8px) rotate(-3deg); }
+            60%  { transform: translate(20px, -8px) rotate(3deg); }
+            64%  { transform: translate(-15px, 5px) rotate(-2deg); }
+            68%  { transform: translate(15px, -5px) rotate(2deg); }
+            72%  { transform: translate(-10px, 3px) rotate(-1deg); }
+            76%  { transform: translate(10px, -3px) rotate(1deg); }
+            80%  { transform: translate(-6px, 2px) rotate(0deg); }
+            84%  { transform: translate(6px, -2px) rotate(0deg); }
+            88%  { transform: translate(-4px, 0); }
+            92%  { transform: translate(4px, 0); }
+            96%  { transform: translate(-2px, 0); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        .nudge-shaking {
+            /* Diminuí o tempo para 1.2s para ficar mais rápido e violento */
+            animation: nudge-shake 1.2s linear;
+            transform-origin: center center;
+        }
+
+        .notif-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #316ac5;
+            border-radius: 50%;
+            margin-left: 5px;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        /* ================================================================
+           5. MODAL "CRIAR SALA" (mesmo estilo azul/vidro do resto do app,
+              substitui o prompt() padrão do navegador)
+           ================================================================ */
+        .criar-sala-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 36, 106, 0.35);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .criar-sala-overlay.open {
+            display: flex;
+        }
+
+        .criar-sala-modal {
+            width: 240px;
+            background: linear-gradient(
+                to bottom,
+                #d4e0ee 0%,
+                #f0f5fa 12%,
+                #f0f5fa 35%,
+                #dbe5f0 55%,
+                #eef4fa 85%,
+                #ebf2f9 100%
+            );
+            border: 1px solid #627ea1;
+            border-radius: 6px;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 6px 18px rgba(0, 0, 0, 0.4);
+            padding: 14px;
+        }
+
+        .criar-sala-titulo {
+            color: #2f5fa8;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+
+        .criar-sala-erro {
+            display: none;
+            color: #d32f2f;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        .criar-sala-botoes {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .criar-sala-botoes .msn-login-btn {
+            min-width: 90px;
+            padding: 4px 10px;
+        }
+    </style>
+    <script src="ruffle/ruffle.js"></script>
+    <script>
+        window.RufflePlayer = window.RufflePlayer || {};
+        window.RufflePlayer.config = {
+            splashScreen: false,
+            preloader: false
+        };
+    </script>
+</head>
+<body>
+
+    <div id="app-container">
+        <!-- Avisos globais (desconexão, servidor cheio, erros de conexão etc.),
+             ficam por cima de qualquer tela (login ou chat) -->
+        <div id="aviso-global-container"></div>
+
+        <div class="wink-overlay" id="wink-overlay">
+            <div class="wink-overlay-box" id="wink-overlay-box"></div>
+        </div>
+
+        <!-- Tela de Login -->
+        <div id="login-screen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+            <div style="position: absolute; top: 8px; left: 20px; display: flex; align-items: center; gap: 6px; z-index: 10;">
+                <div class="top-left-menu-icon" title="Menu" style="z-index: 1; margin-left: -8px;">
+                    <svg viewBox="0 0 10 10" fill="none">
+                        <path d="M2.7 2.7L5 1.2L7.3 2.7" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2.7 7.3L5 8.8L7.3 7.3" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <img src="images/msn.png" alt="MSN" class="msn-logo-top" style="position: relative; z-index: 2; margin-left: 24px; margin-top: 3px; width: 44px; height: auto;">
+                <span class="msn-messenger-text" style="position: relative; z-index: 2; margin-left: -2px; margin-top: 4px;">Messenger</span>
+            </div>
+            <div class="avatar-area">
+            <div class="avatar-uploader" id="avatar-uploader" title="Logo MSN">
+                <img src="images/logomsn.png" alt="Logo MSN" class="avatar-image">
+            </div>
+        </div>
+
+        <div class="login-form-area">
+            <!-- Campo de E-mail -->
+            <div class="input-block">
+                <label class="msn-label">Usuário:</label>
+                <div class="input-row">
+                    <input type="text" class="msn-input" id="email-input">
+                    <div class="msn-dropdown-btn">
+                        <svg viewBox="0 0 7 4">
+                            <polygon points="0,0 7,0 3.5,4" fill="#000000"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campo de Senha -->
+            <div class="input-block">
+                <label class="msn-label">Senha:</label>
+                <div class="input-row">
+                    <input type="password" class="msn-input" id="password-input">
+                </div>
+            </div>
+
+            <!-- Seletor de Status -->
+            <div class="status-row" id="status-toggle" title="Clique para alterar o status">
+                <span class="status-text">Status: <span id="current-status">Online</span></span>
+                <svg class="status-arrow" viewBox="0 0 7 4">
+                    <polygon points="0,0 7,0 3.5,4" fill="#000000"/>
+                </svg>
+            </div>
+
+            <!-- Campos de Servidor e Porta -->
+            <div class="server-config-row">
+                <!-- Campo Servidor -->
+                <div class="input-block" style="flex: 7;">
+                    <label class="msn-label">Endereço do servidor:</label>
+                    <div class="input-row">
+                        <input type="text" class="msn-input" id="server-input" placeholder="ex.: 192.168.0.12">
+                    </div>
+                </div>
+                
+                <!-- Campo Porta -->
+                <div class="input-block" style="flex: 3;">
+                    <label class="msn-label">Porta:</label>
+                    <div class="input-row">
+                        <input type="text" class="msn-input" id="port-input" placeholder="ex.: 5000">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensagem de erro ao tentar entrar sem dados -->
+            <div class="error-msg" id="login-error" style="text-align: center; margin-top: 10px;">Preencha o usuário e senha para entrar.</div>
+
+            <!-- Botão de Entrar -->
+            <div class="login-btn-container">
+                <button class="msn-login-btn" id="btn-login-entrar" onclick="entrarNoChat()">Entrar</button>
+            </div>
+        </div>
+
+        <!-- Área dos bonecos no canto inferior direito -->
+        <div class="bottom-right-area">
+            <div class="figures-uploader" id="figures-uploader" title="Fundo">
+                <img src="images/fundo.png" alt="Fundo" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <a class="signup-link" id="signup-link">Faça uma nova conta</a>
+        </div>
+        </div> <!-- Fim da Tela de Login -->
+
+        <!-- Tela de Cadastro -->
+        <div id="signup-screen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+            <div style="position: absolute; top: 8px; left: 20px; display: flex; align-items: center; gap: 6px; z-index: 10;">
+                <div class="top-left-menu-icon" title="Menu" style="z-index: 1; margin-left: -8px;">
+                    <svg viewBox="0 0 10 10" fill="none">
+                        <path d="M2.7 2.7L5 1.2L7.3 2.7" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2.7 7.3L5 8.8L7.3 7.3" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <img src="images/msn.png" alt="MSN" class="msn-logo-top" style="position: relative; z-index: 2; margin-left: 24px; margin-top: 3px; width: 44px; height: auto;">
+                <span class="msn-messenger-text" style="position: relative; z-index: 2; margin-left: -2px; margin-top: 4px;">Messenger</span>
+            </div>
+            
+            <!-- Wrapper que coloca a imagem e o formulário lado a lado -->
+            <div class="signup-layout-wrapper">
+                
+                <!-- Imagem Esquerda -->
+                <div>
+                    <div class="signup-left-uploader">
+                        <img src="images/logomsn.png" alt="MSN" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                </div>
+
+                <!-- Área do Formulário -->
+                <div class="signup-form-area">
+                    <h2 class="signup-title">Criar conta</h2>
+                    <p class="signup-subtitle">Escolha um apelido único para o chat.</p>
+                    <p class="signup-subtitle" id="signup-server-info" style="font-size: 11px; color: #4b5563; margin-top: -4px;"></p>
+
+                    <div class="input-block">
+                        <label class="msn-label">Usuário</label>
+                        <div class="input-row">
+                            <input type="text" class="msn-input" placeholder="seu apelido">
+                        </div>
+                    </div>
+
+                    <div class="input-block">
+                        <label class="msn-label">Senha</label>
+                        <div class="input-row">
+                            <input type="password" class="msn-input" id="reg-pass1">
+                        </div>
+                    </div>
+
+                    <div class="input-block">
+                        <label class="msn-label">Confirmar senha</label>
+                        <div class="input-row">
+                            <input type="password" class="msn-input" id="reg-pass2">
+                        </div>
+                    </div>
+
+                    <div class="error-msg" id="pass-error">As senhas não coincidem.</div>
+
+                    <div class="login-btn-container" style="margin-top: 8px;">
+                        <button class="msn-login-btn">Criar conta</button>
+                    </div>
+                </div>
+            </div> <!-- Fim do Wrapper Flex -->
+
+            <!-- Área dos bonecos no canto inferior direito exclusiva do cadastro -->
+            <div class="bottom-right-area">
+                <div class="figures-uploader" id="signup-figures-uploader" title="Fundo">
+                    <img src="images/fundo.png" alt="Fundo" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <a class="signup-link" id="back-link">Voltar para o login</a>
+            </div>
+
+        </div>
+
+        <!-- Tela Principal (Logado) -->
+        <div id="main-screen" style="display:none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+            <div style="position: absolute; top: 2px; left: 20px; display: flex; align-items: center; gap: 6px; z-index: 20;">
+                <div class="top-left-menu-icon" title="Menu" style="z-index: 1; margin-left: -14px;">
+                    <svg viewBox="0 0 10 10" fill="none">
+                        <path d="M2.7 2.7L5 1.2L7.3 2.7" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2.7 7.3L5 8.8L7.3 7.3" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <img src="images/msn.png" alt="MSN" class="msn-logo-top" style="position: relative; z-index: 2; margin-left: 16px; margin-top: 3px; width: 44px; height: auto;">
+                <span class="msn-messenger-text" style="position: relative; z-index: 2; margin-left: -1px; margin-top: 4px;">Messenger</span>
+            </div>
+            <div class="chat-top-left-card">
+                <div style="position: absolute; top: 30px; left: 10px; width: 56px; height: 52px; background: #ffffff; border: 1px solid #4ade80; border-radius: 6px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 1px 1px rgba(255,255,255,0.9), 0 1px 2px rgba(0,0,0,0.08); z-index: 3; overflow: hidden;">
+                    <img id="profile-photo-img" src="images/logomsn.png" alt="Foto de perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">
+                </div>
+                <div style="position: absolute; top: 34px; left: 74px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; z-index: 3;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div id="logged-user-name" style="font-family: Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; font-weight: 600; color: #000; line-height: 1.1;">Usuário</div>
+                        <button id="chat-status-toggle" type="button" title="Clique para alterar o status" onclick="toggleChatStatus()" style="display: flex; align-items: center; gap: 3px; cursor: pointer; font-family: Tahoma, Geneva, Verdana, sans-serif; font-size: 11px; color: #6b7280; background: transparent; border: none; padding: 0;">
+                            <span id="chat-current-status">Online</span>
+                            <span style="font-size: 10px; line-height: 1;">▼</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-bottom-left-card">
+                <div class="category-panel">
+                    <div id="category-list" class="category-list">
+                        <div class="category-item">
+                            <div class="category-item-icon" id="cat-icon-geral" onclick="toggleSublist('geral')">
+                                <svg viewBox="0 0 10 13" fill="none" width="10" height="12">
+                                    <path d="M2.7 5.0L5 2.5L7.3 5.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2.7 9.0L5 6.5L7.3 9.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="category-item-label">Geral</span>
+                        </div>
+                        <div id="sublist-geral" class="sublist">
+                            <div class="room-entry">#geral</div>
+                        </div>
+
+                        <div class="category-item">
+                            <div class="category-item-icon" id="cat-icon-minhas-salas" onclick="toggleSublist('minhas-salas')">
+                                <svg viewBox="0 0 10 13" fill="none" width="10" height="12">
+                                    <path d="M2.7 5.0L5 2.5L7.3 5.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2.7 9.0L5 6.5L7.3 9.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="category-item-label">Minhas salas</span>
+                        </div>
+                        <div id="sublist-minhas-salas" class="sublist">
+                            <div class="room-entry">#esportes</div>
+                            <div class="room-entry">#saladojoao</div>
+                        </div>
+
+                        <div class="category-item">
+                            <div class="category-item-icon" id="cat-icon-pedidos-entrada" onclick="toggleSublist('pedidos-entrada')">
+                                <svg viewBox="0 0 10 13" fill="none" width="10" height="12">
+                                    <path d="M2.7 5.0L5 2.5L7.3 5.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2.7 9.0L5 6.5L7.3 9.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="category-item-label">Pedidos de Entrada</span>
+                        </div>
+                        <div id="sublist-pedidos-entrada" class="sublist">
+                            <div class="request-entry">joao pediu para entrar em #esportes</div>
+                            <div class="request-entry">marina pediu para entrar em #saladojoao</div>
+                        </div>
+
+                        <div class="category-item">
+                            <div class="category-item-icon" id="cat-icon-outras-salas" onclick="toggleSublist('outras-salas')">
+                                <svg viewBox="0 0 10 13" fill="none" width="10" height="12">
+                                    <path d="M2.7 5.0L5 2.5L7.3 5.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2.7 9.0L5 6.5L7.3 9.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="category-item-label">Outras salas</span>
+                        </div>
+                        <div id="sublist-outras-salas" class="sublist">
+                            <div class="room-entry room-entry-locked">#cinema — clique para poder entrar</div>
+                            <div class="room-entry room-entry-locked">#jogos — clique para poder entrar</div>
+                        </div>
+
+                        <div class="category-item">
+                            <div class="category-item-icon" id="cat-icon-online" onclick="toggleSublist('online')">
+                                <svg viewBox="0 0 10 13" fill="none" width="10" height="12">
+                                    <path d="M2.7 5.0L5 2.5L7.3 5.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2.7 9.0L5 6.5L7.3 9.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="category-item-label">Online</span>
+                            <span id="online-contador" class="category-item-count"></span>
+                        </div>
+                        <div id="sublist-online" class="sublist">
+                            <div class="person-item"><img src="images/icone.png" alt="Ícone"><span>joao</span></div>
+                            <div class="person-item"><img src="images/icone.png" alt="Ícone"><span>marina</span></div>
+                        </div>
+
+                        <div class="category-item">
+                            <div class="category-item-icon" id="cat-icon-offline" onclick="toggleSublist('offline')">
+                                <svg viewBox="0 0 10 13" fill="none" width="10" height="12">
+                                    <path d="M2.7 5.0L5 2.5L7.3 5.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2.7 9.0L5 6.5L7.3 9.0" stroke="#4b5563" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="category-item-label">Offline</span>
+                        </div>
+                        <div id="sublist-offline" class="sublist">
+                            <div class="person-item"><img src="images/offline.png" alt="Offline"><span>ana</span></div>
+                            <div class="person-item"><img src="images/offline.png" alt="Offline"><span>bruno</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-screen-layout">
+                <div class="left-panel"></div>
+                <div class="right-panel">
+                    <div class="chat-window">
+                        <div class="chat-header">
+                            <div class="chat-to-row">
+                                <span class="chat-to-label">Para:</span>
+                                <span id="chat-to-value" class="chat-to-value">NomeDoContato</span>
+                            </div>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-messages">
+                                <div style="font-family: Tahoma; font-size: 11px; color: #555; margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 6px;">
+                                    <span style="display:inline-block; width:12px; height:12px; background:#444; border-radius:50%; margin-right:4px; vertical-align:middle;"></span>
+                                    Nunca forneça sua senha ou número de cartão de crédito em uma conversa de mensagem instantânea.
+                                </div>
+                                <div style="font-family: Tahoma; font-size: 11px; color: #000; margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 6px;">
+                                    Você acabou de enviar um Chamar Atenção!
+                                </div>
+                                
+                                <div class="chat-message-item">
+                                    <span class="chat-message-author">Millind diz:</span>
+                                    <span class="chat-message-text">😲</span>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="chat-toolbar">
+                                <div class="fonte-menu-wrapper">
+                                    <button class="toolbar-button" id="fonte-btn" type="button"><strong style="font-family: serif; font-size:14px; color:#1e3a8a;">A</strong> Fonte <span style="font-size: 8px;">▼</span></button>
+                                    <div class="fonte-menu" id="fonte-menu">
+                                        <div class="fonte-option" id="fonte-opcao-negrito"><span class="fonte-check">✓</span><strong>Negrito</strong></div>
+                                        <div class="fonte-option" id="fonte-opcao-italico"><span class="fonte-check">✓</span><em>Itálico</em></div>
+                                    </div>
+                                </div>
+                                <div class="toolbar-separator"></div>
+                                <div class="emoticons-menu-wrapper">
+                                    <button class="toolbar-button" id="emoticons-btn" type="button"><img src="images/smile.png" width="16" height="16" style="vertical-align:middle;"> <span style="font-size: 8px;">▼</span></button>
+                                    <div class="emoticons-menu" id="emoticons-menu">
+                                        <div class="emoticons-menu-title">Emoticons</div>
+                                        <div class="emoticons-grid" id="emoticons-grid"></div>
+                                    </div>
+                                </div>
+                                <div class="toolbar-separator"></div>
+                                <div class="winks-menu-wrapper">
+                                    <button class="toolbar-button" id="winks-btn" type="button"><img src="images/winking.png" width="16" height="16" style="vertical-align:middle;"> Winks <span style="font-size: 8px;">▼</span></button>
+                                    <div class="winks-menu" id="winks-menu">
+                                        <div class="winks-menu-title">Winks</div>
+                                        <div class="winks-grid" id="winks-grid"></div>
+                                    </div>
+                                </div>
+                                <div class="toolbar-separator"></div>
+                                <button class="toolbar-button" id="arquivo-btn" type="button"><img src="images/background.png" width="16" height="16" style="vertical-align:middle;"> Arquivos</button>
+                                <div class="toolbar-separator"></div>
+                                <button class="toolbar-button" id="nudge-btn" type="button" style="padding:0 4px;"><img id="nudge-icon" src="images/nudge.png" width="35" height="20" style="vertical-align:middle;"></button>
+                            </div>
+                            <div class="arquivo-pendente-bar" id="arquivo-pendente-bar">
+                                <img id="arquivo-pendente-thumb" style="display:none;max-width:36px;max-height:36px;border:1px solid #8e9bb3;border-radius:2px;">
+                                <span id="arquivo-pendente-nome"></span>
+                                <button type="button" class="arquivo-pendente-btn" id="arquivo-pendente-enviar">Enviar</button>
+                                <button type="button" class="arquivo-pendente-btn" id="arquivo-pendente-cancelar">Cancelar</button>
+                            </div>
+                            <div class="chat-input-row">
+                                <textarea class="chat-input" placeholder=""></textarea>
+                                <div class="chat-actions">
+                                    <button class="chat-action-button" type="button">Enviar</button>
+                                </div>
+                            </div>
+                            <div class="chat-status-footer" id="ultima-mensagem-footer">
+                                Última mensagem recebida em 21/12/2004 às 14:47.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: Criar sala -->
+        <div class="criar-sala-overlay" id="criar-sala-overlay">
+            <div class="criar-sala-modal">
+                <p class="criar-sala-titulo">Criar nova sala</p>
+                <input type="text" class="msn-input" id="criar-sala-input" placeholder="Nome da sala" maxlength="60" style="width: 100%; box-sizing: border-box;">
+                <p class="criar-sala-erro" id="criar-sala-erro"></p>
+                <div class="criar-sala-botoes">
+                    <button type="button" class="msn-login-btn" id="criar-sala-confirmar">Criar</button>
+                    <button type="button" class="msn-login-btn" id="criar-sala-cancelar">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // =================================================================
+        // Ponte com o backend real (server.py + client.py/pywebview).
+        // Nada de HTML/CSS foi alterado — só este bloco de script, que
+        // troca as funções de mentira por chamadas reais a
+        // window.pywebview.api.* (JS -> Python) e um receptor global
+        // window.receberMensagem (Python -> JS) para eventos do servidor.
+        // Protocolo: 1 mensagem JSON por linha sobre um socket TCP único.
+        // =================================================================
+
+        // --------------------------------------------------------------
+        // 1. ESTADO LOCAL E TELAS DE LOGIN / CADASTRO
+        // --------------------------------------------------------------
+
+        // ---- estado local da UI ----
+        let usuarioAtual = null;
+        let currentTarget = { tipo: 'sala', nome: 'geral' }; // { tipo: 'sala'|'privada', nome }
+        let usuariosOnline = [];
+        let usuariosCadastrados = []; // TODOS que ja se cadastraram, conectados ou nao (vem em msg.cadastrados)
+        // Sinaliza que a proxima resposta LISTA que chegar veio do comando
+        // "/lista" digitado no chat (requisito 6), e nao de uma atualizacao
+        // automatica de rotina (login/logout/mudanca de status de alguem) —
+        // so nesse caso a lista tambem vira uma mensagem visivel no chat.
+        let mostrarListaComoMensagem = false;
+        let fonteNegrito = false;
+        let fonteItalico = false;
+        let salasCache = { minhas: [], outras: [], pendentes: {} };
+        const LIMITE_ARQUIVO = 5 * 1024 * 1024; // 5MB, mesmo limite validado no servidor
+
+        // ---- status (cosmético; o protocolo não define broadcast de status) ----
+        const statusToggle = document.getElementById('status-toggle');
+        const currentStatus = document.getElementById('current-status');
+
+        if (statusToggle && currentStatus) {
+            statusToggle.addEventListener('click', () => {
+                currentStatus.innerText = currentStatus.innerText === 'Online' ? 'Offline' : 'Online';
+            });
+        }
+
+        // ---- navegação login <-> cadastro ----
+        const loginScreen = document.getElementById('login-screen');
+        const signupScreen = document.getElementById('signup-screen');
+        const linkCadastro = document.getElementById('signup-link');
+        const btnVoltar = document.getElementById('back-link');
+
+        // O cadastro não tem campos próprios de servidor/porta — ele usa os
+        // mesmos valores da tela de login (ver signupButton abaixo). Esse
+        // aviso deixa isso visível para quem está cadastrando, evitando
+        // criar a conta num servidor e tentar logar em outro.
+        const signupServerInfo = document.getElementById('signup-server-info');
+        function atualizarAvisoServidorCadastro() {
+            if (!signupServerInfo) return;
+            const servidor = (document.getElementById('server-input').value || '').trim();
+            const porta = (document.getElementById('port-input').value || '').trim();
+            if (servidor === '' || porta === '') {
+                signupServerInfo.textContent = 'Preencha o endereço e a porta na tela de login antes de cadastrar.';
+            } else {
+                signupServerInfo.textContent = `Esta conta será criada em: ${servidor}:${porta} (para mudar, volte à tela de login).`;
+            }
+        }
+
+        linkCadastro.addEventListener('click', () => {
+            loginScreen.style.display = 'none';
+            signupScreen.style.display = 'block';
+            atualizarAvisoServidorCadastro();
+        });
+
+        btnVoltar.addEventListener('click', () => {
+            signupScreen.style.display = 'none';
+            loginScreen.style.display = 'block';
+        });
+
+        // ---- validação de senha no cadastro ----
+        const regPass1 = document.getElementById('reg-pass1');
+        const regPass2 = document.getElementById('reg-pass2');
+        const passError = document.getElementById('pass-error');
+
+        function validatePasswords() {
+            if (regPass1.value !== '' && regPass2.value !== '' && regPass1.value !== regPass2.value) {
+                passError.style.color = '#d32f2f';
+                passError.textContent = 'As senhas não coincidem.';
+                passError.style.display = 'block';
+            } else {
+                passError.style.display = 'none';
+            }
+        }
+
+        regPass1.addEventListener('input', validatePasswords);
+        regPass2.addEventListener('input', validatePasswords);
+
+        // O campo de usuário do cadastro não tinha id no HTML original;
+        // localizamos ele pela posição (primeiro .input-block do formulário)
+        // em vez de mudar o HTML.
+        const signupUserInput = document.querySelector('#signup-screen .signup-form-area .input-block:first-of-type .msn-input');
+        const signupButton = document.querySelector('#signup-screen .login-btn-container .msn-login-btn');
+
+        // ---- login real via pywebview ----
+        async function entrarNoChat() {
+            const inputUsuario = document.getElementById('email-input');
+            const inputSenha = document.getElementById('password-input');
+            const msgErroLogin = document.getElementById('login-error');
+            const servidorInput = document.getElementById('server-input');
+            const portaInput = document.getElementById('port-input');
+
+            if (!inputUsuario || !inputSenha || !msgErroLogin) {
+                return;
+            }
+
+            const usuario = inputUsuario.value.trim();
+            const senha = inputSenha.value.trim();
+            const servidor = servidorInput.value.trim();
+            const porta = portaInput.value.trim();
+
+            if (usuario === '' || senha === '') {
+                msgErroLogin.textContent = 'Preencha o usuário e senha para entrar.';
+                msgErroLogin.style.display = 'block';
+                return;
+            }
+            if (servidor === '' || porta === '') {
+                msgErroLogin.textContent = 'Preencha o endereço e a porta do servidor.';
+                msgErroLogin.style.display = 'block';
+                return;
+            }
+
+            msgErroLogin.style.display = 'none';
+            const resultado = await window.pywebview.api.login(usuario, senha, servidor, porta);
+            if (!resultado.ok) {
+                msgErroLogin.textContent = 'Não foi possível conectar ao servidor: ' + resultado.erro;
+                msgErroLogin.style.display = 'block';
+            }
+            // Em caso de sucesso, a tela principal só é exibida quando o
+            // servidor confirmar com LOGIN_OK (chega via receberMensagem).
+        }
+
+        // ---- cadastro real via pywebview ----
+        if (signupButton) {
+            signupButton.addEventListener('click', async () => {
+                const usuario = signupUserInput ? signupUserInput.value.trim() : '';
+                const senha = regPass1.value;
+                const senha2 = regPass2.value;
+                const servidor = document.getElementById('server-input').value.trim();
+                const porta = document.getElementById('port-input').value.trim();
+
+                if (usuario === '' || senha === '') {
+                    passError.style.color = '#d32f2f';
+                    passError.textContent = 'Preencha usuário e senha.';
+                    passError.style.display = 'block';
+                    return;
+                }
+                // mesma regra validada no servidor: sem espaço e sem acento,
+                // só letras, números, "_" ou "-" — feedback imediato aqui
+                // evita a ida e volta até o servidor pra descobrir isso
+                if (!/^[A-Za-z0-9_-]+$/.test(usuario)) {
+                    passError.style.color = '#d32f2f';
+                    passError.textContent = "Nome de usuário inválido: use apenas letras (sem acento), números, '_' ou '-', sem espaços.";
+                    passError.style.display = 'block';
+                    return;
+                }
+                if (senha.length < 8) {
+                    passError.style.color = '#d32f2f';
+                    passError.textContent = 'A senha deve ter pelo menos 8 caracteres.';
+                    passError.style.display = 'block';
+                    return;
+                }
+                if (senha !== senha2) {
+                    passError.style.color = '#d32f2f';
+                    passError.textContent = 'As senhas não coincidem.';
+                    passError.style.display = 'block';
+                    return;
+                }
+                if (servidor === '' || porta === '') {
+                    passError.style.color = '#d32f2f';
+                    passError.textContent = 'Preencha o endereço e a porta do servidor (na tela de login).';
+                    passError.style.display = 'block';
+                    return;
+                }
+
+                const resultado = await window.pywebview.api.registrar(usuario, senha, servidor, porta);
+                if (!resultado.ok) {
+                    passError.style.color = '#d32f2f';
+                    passError.textContent = 'Não foi possível conectar ao servidor: ' + resultado.erro;
+                    passError.style.display = 'block';
+                }
+                // REGISTRO_OK / REGISTRO_ERRO chegam via receberMensagem.
+            });
+        }
+
+        // --------------------------------------------------------------
+        // 2. STATUS E FORMATAÇÃO DO CHAT (NEGRITO/ITÁLICO)
+        // --------------------------------------------------------------
+
+        function toggleChatStatus() {
+            const chatCurrentStatus = document.getElementById('chat-current-status');
+            if (!chatCurrentStatus) {
+                return;
+            }
+            const currentValue = chatCurrentStatus.textContent.trim();
+            const novoStatus = currentValue === 'Online' ? 'offline' : 'online';
+            chatCurrentStatus.textContent = novoStatus === 'offline' ? 'Offline' : 'Online'; // otimista; LISTA confirma depois
+            if (window.pywebview) {
+                window.pywebview.api.alterar_status(novoStatus);
+            }
+        }
+
+        function toggleSublist(category) {
+            const sublist = document.getElementById(`sublist-${category}`);
+            const icone = document.getElementById(`cat-icon-${category}`);
+            if (!sublist) {
+                return;
+            }
+            sublist.classList.toggle('active');
+            if (icone) {
+                icone.classList.toggle('aberto', sublist.classList.contains('active'));
+            }
+        }
+
+        function toggleMenuFonte(forcarFechado) {
+            const menu = document.getElementById('fonte-menu');
+            if (!menu) return;
+            if (forcarFechado) {
+                menu.classList.remove('open');
+            } else {
+                menu.classList.toggle('open');
+            }
+        }
+
+        // Reflete negrito/itálico ativos tanto no menu (checkmark) quanto no
+        // textarea (pra já mostrar como vai ficar enquanto a pessoa digita).
+        function atualizarEstadoFonte() {
+            const opcaoNegrito = document.getElementById('fonte-opcao-negrito');
+            const opcaoItalico = document.getElementById('fonte-opcao-italico');
+            if (opcaoNegrito) opcaoNegrito.classList.toggle('ativo', fonteNegrito);
+            if (opcaoItalico) opcaoItalico.classList.toggle('ativo', fonteItalico);
+
+            const chatInput = document.querySelector('.chat-input');
+            if (chatInput) {
+                chatInput.style.fontWeight = fonteNegrito ? 'bold' : 'normal';
+                chatInput.style.fontStyle = fonteItalico ? 'italic' : 'normal';
+            }
+        }
+
+        // A mensagem inteira (não trechos soltos) é envolvida em marcadores
+        // simples antes de ser enviada — "**texto**" pra negrito e "_texto_"
+        // pra itálico — e viaja assim, como texto comum, pelo mesmo
+        // protocolo de sempre. Isso faz o estilo persistir no histórico de
+        // graça, sem precisar mexer no servidor.
+        function extrairEstiloFonte(textoOriginal) {
+            let texto = textoOriginal;
+            let italico = false;
+            let negrito = false;
+            if (texto.length >= 2 && texto.startsWith('_') && texto.endsWith('_')) {
+                italico = true;
+                texto = texto.slice(1, -1);
+            }
+            if (texto.length >= 4 && texto.startsWith('**') && texto.endsWith('**')) {
+                negrito = true;
+                texto = texto.slice(2, -2);
+            }
+            return { texto, italico, negrito };
+        }
+
+        // --------------------------------------------------------------
+        // 3. RENDERIZAÇÃO DE MENSAGENS NO CHAT
+        // --------------------------------------------------------------
+
+        function createChatMessage(author, text) {
+            const message = document.createElement('div');
+            message.className = 'chat-message-item';
+
+            const authorLabel = document.createElement('span');
+            authorLabel.className = 'chat-message-author';
+            authorLabel.textContent = author + " diz:";
+
+            const { texto, italico, negrito } = extrairEstiloFonte(text);
+
+            const messageBody = document.createElement('span');
+            messageBody.className = 'chat-message-text';
+            if (negrito) messageBody.style.fontWeight = 'bold';
+            if (italico) messageBody.style.fontStyle = 'italic';
+            renderizarTextoComEmoticons(messageBody, texto);
+
+            message.appendChild(authorLabel);
+            message.appendChild(messageBody);
+            return message;
+        }
+
+        const MIME_POR_EXTENSAO = {
+            png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg',
+            gif: 'image/gif', webp: 'image/webp', bmp: 'image/bmp',
+        };
+
+        function mimeDeImagem(nome) {
+            const ext = (nome || '').split('.').pop().toLowerCase();
+            return MIME_POR_EXTENSAO[ext] || null;
+        }
+
+        function adicionarArquivoMsg(msg) {
+            const chatMessages = document.querySelector('.chat-messages');
+            if (!chatMessages) {
+                return;
+            }
+            const author = msg.de === usuarioAtual ? 'Você' : msg.de;
+            const item = document.createElement('div');
+            item.className = 'chat-message-item';
+
+            const authorLabel = document.createElement('span');
+            authorLabel.className = 'chat-message-author';
+            authorLabel.textContent = author;
+            item.appendChild(authorLabel);
+
+            const mime = mimeDeImagem(msg.nome);
+
+            if (msg.arquivo_salvo && mime) {
+                // Imagem: busca a miniatura sob demanda (base64, sem abrir
+                // diálogo de salvar) e mostra direto no chat, além do botão
+                // de baixar de sempre.
+                const img = document.createElement('img');
+                img.alt = msg.nome;
+                img.style.cssText = 'display:block;max-width:100%;width:auto;height:auto;min-width:120px;max-height:420px;margin:4px 0;border:1px solid #9cb2cf;border-radius:2px;background:#eef2f8;';
+                item.appendChild(img);
+                window.pywebview.api.obter_preview_arquivo(msg.arquivo_salvo)
+                    .then((res) => {
+                        if (res && res.ok && res.conteudo_base64) {
+                            img.src = `data:${mime};base64,${res.conteudo_base64}`;
+                        } else {
+                            img.remove();
+                        }
+                    })
+                    .catch(() => img.remove());
+            }
+
+            if (msg.arquivo_salvo) {
+                // Botão em vez de <a href="data:...;base64,..." download>: o
+                // WebView2 embutido no pywebview nem sempre honra esse tipo de
+                // link. O botão pede o conteúdo ao servidor sob demanda e usa
+                // o diálogo nativo "Salvar como" (via client.py), que funciona
+                // tanto para um arquivo recém-enviado quanto para um antigo
+                // recuperado do histórico — mesmo mecanismo para os dois casos.
+                const tamanhoKB = Math.round((msg.tamanho || 0) / 1024);
+                const botao = document.createElement('button');
+                botao.type = 'button';
+                botao.className = 'chat-arquivo-baixar';
+                botao.style.cssText = 'color:#0b3d91;background:none;border:none;padding:0;font:inherit;cursor:pointer;text-decoration:underline;';
+                const rotuloPadrao = `📎 ${msg.nome} (${tamanhoKB} KB) — baixar`;
+                botao.textContent = rotuloPadrao;
+                botao.addEventListener('click', () => {
+                    if (botao.disabled) return;
+                    botao.disabled = true;
+                    botao.textContent = `📎 ${msg.nome} — baixando...`;
+                    window.pywebview.api.baixar_arquivo(msg.arquivo_salvo, msg.nome)
+                        .then((res) => {
+                            botao.disabled = false;
+                            if (res && res.ok) {
+                                botao.textContent = `📎 ${msg.nome} — salvo ✔ (clique para salvar de novo)`;
+                            } else {
+                                botao.textContent = rotuloPadrao;
+                                if (res && res.erro !== 'Download cancelado.') {
+                                    adicionarSistemaMsg(`Erro ao baixar "${msg.nome}": ${(res && res.erro) || 'falha desconhecida'}`);
+                                }
+                            }
+                        })
+                        .catch(() => {
+                            botao.disabled = false;
+                            botao.textContent = rotuloPadrao;
+                            adicionarSistemaMsg(`Erro ao baixar "${msg.nome}".`);
+                        });
+                });
+                item.appendChild(botao);
+            } else {
+                const texto = document.createElement('span');
+                texto.className = 'chat-message-text';
+                texto.textContent = `📎 ${msg.nome} (arquivo não está mais disponível)`;
+                item.appendChild(texto);
+            }
+            chatMessages.appendChild(item);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function adicionarNudgeMsg(texto) {
+            const chatMessages = document.querySelector('.chat-messages');
+            if (!chatMessages) return;
+
+            const nudgeDiv = document.createElement('div');
+            nudgeDiv.style.cssText = 'font-family: Tahoma, sans-serif; font-size: 11px; font-weight: bold; color: #1e3a8a; padding: 2px 0;';
+            nudgeDiv.textContent = texto;
+            const linhaDiv = document.createElement('div');
+            linhaDiv.style.cssText = 'border-top: 1px solid #9cb2cf; margin: 2px 0 4px 0; width: 60px;';
+
+            chatMessages.appendChild(nudgeDiv);
+            chatMessages.appendChild(linhaDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function adicionarWinkMsg(author, winkId) {
+            const chatMessages = document.querySelector('.chat-messages');
+            if (!chatMessages) return;
+
+            const item = document.createElement('div');
+            item.className = 'chat-message-item';
+
+            const authorLabel = document.createElement('span');
+            authorLabel.className = 'chat-message-author';
+            authorLabel.textContent = author + ' diz:';
+            item.appendChild(authorLabel);
+
+            const texto = document.createElement('span');
+            texto.className = 'chat-message-text';
+            texto.style.cssText = 'display:inline-flex; align-items:center; gap:4px; vertical-align:middle;';
+            texto.innerHTML = 'WINK: <img src="images/winks-preview/' + winkId + '.png" width="24" height="24" alt="' + winkId + '" style="vertical-align:middle; border-radius:2px;">';
+            item.appendChild(texto);
+
+            chatMessages.appendChild(item);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function adicionarSistemaMsg(texto) {
+            const chatMessages = document.querySelector('.chat-messages');
+            if (!chatMessages) {
+                return;
+            }
+            chatMessages.appendChild(createChatMessage('Sistema', texto));
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Mostra um aviso azul flutuante no topo da tela, visível em
+        // QUALQUER tela (login ou chat) — diferente de adicionarSistemaMsg,
+        // que só aparece dentro do chat (e some se a tela mudar antes de o
+        // usuário ver). Usado para avisos importantes: desconexão, servidor
+        // cheio, erro de conexão etc.
+        function mostrarAvisoGlobal(texto, duracaoMs = 5000) {
+            const container = document.getElementById('aviso-global-container');
+            if (!container || !texto) return;
+            const toast = document.createElement('div');
+            toast.className = 'aviso-global-toast';
+            toast.textContent = texto;
+            container.appendChild(toast);
+            // proximo frame, pra garantir que a transicao de entrada rode
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 250);
+            }, duracaoMs);
+        }
+
+        // Troca o alvo do chat (sala #nome ou usuário privado) e pede o
+        // histórico correspondente ao servidor.
+        // --------------------------------------------------------------
+        // 4. MODAL "CRIAR SALA"
+        // --------------------------------------------------------------
+
+        // abre o modal, limpando campo e erro que sobraram de uma tentativa anterior
+        function abrirModalCriarSala() {
+            const overlay = document.getElementById('criar-sala-overlay');
+            const input = document.getElementById('criar-sala-input');
+            const erro = document.getElementById('criar-sala-erro');
+            if (!overlay || !input || !erro) return;
+            erro.style.display = 'none';
+            erro.textContent = '';
+            input.value = '';
+            overlay.classList.add('open');
+            input.focus();
+        }
+
+        // fecha o modal sem enviar nada ao servidor
+        function fecharModalCriarSala() {
+            const overlay = document.getElementById('criar-sala-overlay');
+            if (overlay) {
+                overlay.classList.remove('open');
+            }
+        }
+
+        // valida o nome digitado e manda o pedido de criação de sala pro backend
+        function confirmarCriarSala() {
+            const input = document.getElementById('criar-sala-input');
+            const erro = document.getElementById('criar-sala-erro');
+            if (!input) return;
+            const nome = input.value.trim();
+            if (!nome) {
+                if (erro) {
+                    erro.textContent = 'Digite um nome para a sala.';
+                    erro.style.display = 'block';
+                }
+                return;
+            }
+            if (erro) {
+                erro.style.display = 'none';
+                erro.textContent = '';
+            }
+            window.pywebview.api.criar_sala(nome);
+        }
+
+        // liga os listeners do modal (botões, Enter/Esc, clique fora)
+        function attachCriarSalaModalHandlers() {
+            const overlay = document.getElementById('criar-sala-overlay');
+            const input = document.getElementById('criar-sala-input');
+            const btnConfirmar = document.getElementById('criar-sala-confirmar');
+            const btnCancelar = document.getElementById('criar-sala-cancelar');
+            if (btnConfirmar) {
+                btnConfirmar.addEventListener('click', confirmarCriarSala);
+            }
+            if (btnCancelar) {
+                btnCancelar.addEventListener('click', fecharModalCriarSala);
+            }
+            if (overlay) {
+                overlay.addEventListener('click', (ev) => {
+                    if (ev.target === overlay) {
+                        fecharModalCriarSala();
+                    }
+                });
+            }
+            if (input) {
+                input.addEventListener('keydown', (ev) => {
+                    if (ev.key === 'Enter') {
+                        ev.preventDefault();
+                        confirmarCriarSala();
+                    } else if (ev.key === 'Escape') {
+                        ev.preventDefault();
+                        fecharModalCriarSala();
+                    }
+                });
+            }
+        }
+
+        // --------------------------------------------------------------
+        // 5. ENVIO DE MENSAGENS E ARQUIVOS
+        // --------------------------------------------------------------
+
+        function setChatTarget(tipo, nome) {
+            currentTarget = { tipo, nome };
+            limparArquivoPendente(); // arquivo escolhido era p/ a conversa anterior
+            limparNotificacao(tipo, nome);
+            const targetLabel = document.getElementById('chat-to-value');
+            if (targetLabel) {
+                targetLabel.textContent = tipo === 'sala' ? `#${nome}` : nome;
+            }
+            const chatMessages = document.querySelector('.chat-messages');
+            if (chatMessages) {
+                // mostra "carregando" em vez de deixar em branco: sem isso, se a
+                // resposta do servidor demorar (rede real, latencia entre
+                // maquinas) ou falhar, a conversa parece ter "sumido" ate a
+                // pessoa clicar em outro lugar e voltar
+                chatMessages.innerHTML = '';
+                const carregando = document.createElement('div');
+                carregando.className = 'chat-historico-carregando';
+                carregando.textContent = 'Carregando conversa...';
+                chatMessages.appendChild(carregando);
+            }
+            if (usuarioAtual && window.pywebview) {
+                window.pywebview.api.pedir_historico(tipo === 'sala' ? 'sala' : 'privada', nome);
+                // se depois de um tempo a conversa ainda estiver "carregando" (o
+                // HISTORICO nunca chegou), avisa em vez de deixar parado pra
+                // sempre -- so dispara se a pessoa ainda estiver olhando pra
+                // ESSA mesma conversa quando o tempo estourar
+                setTimeout(() => {
+                    if (currentTarget.tipo !== tipo || currentTarget.nome !== nome) return;
+                    if (document.querySelector('.chat-historico-carregando')) {
+                        mostrarAvisoGlobal('Não foi possível carregar essa conversa. Verifique a conexão e tente clicar nela de novo.');
+                    }
+                }, 6000);
+            }
+        }
+
+        // Envia `texto` para o alvo atualmente selecionado. O chat geral
+        // tem um caminho dedicado no protocolo (tipo MSG_GERAL, via
+        // enviar_mensagem_geral) em vez de ser tratado como "mais uma
+        // sala" — mantém o protocolo de aplicação fiel ao documentado em
+        // server.py/client.py (requisito: chat geral = broadcast de
+        // verdade, roteado por broadcast_geral() no servidor).
+        function enviarTextoParaAlvoAtual(texto) {
+            if (currentTarget.tipo === 'sala' && currentTarget.nome === 'geral') {
+                window.pywebview.api.enviar_mensagem_geral(texto);
+            } else if (currentTarget.tipo === 'sala') {
+                window.pywebview.api.enviar_mensagem_sala(currentTarget.nome, texto);
+            } else {
+                window.pywebview.api.enviar_mensagem_privada(currentTarget.nome, texto);
+            }
+        }
+
+        function sendChatMessage() {
+            const chatInput = document.querySelector('.chat-input');
+            if (!chatInput) {
+                return;
+            }
+            const text = chatInput.value.trim();
+            if (text === '') {
+                return;
+            }
+
+            // Comandos de texto exigidos pelo enunciado (equivalentes aos
+            // botões/telas correspondentes já existentes na UI).
+            if (text === '/lista') {
+                chatInput.value = '';
+                mostrarListaComoMensagem = true;
+                window.pywebview.api.listar();
+                return;
+            }
+            if (text === '/sair') {
+                chatInput.value = '';
+                fazerLogout();
+                return;
+            }
+
+            let textoFinal = text;
+            if (fonteNegrito) textoFinal = '**' + textoFinal + '**';
+            if (fonteItalico) textoFinal = '_' + textoFinal + '_';
+
+            enviarTextoParaAlvoAtual(textoFinal);
+            // Não adicionamos a mensagem localmente: o servidor sempre
+            // ecoa a própria mensagem de volta ao remetente, então a tela
+            // atualiza quando MSG_GERAL/MSG_SALA/MSG_PRIVADA chegar.
+            chatInput.value = '';
+        }
+
+        function attachSendHandlers() {
+            const sendButton = document.querySelector('.chat-action-button');
+            const chatInput = document.querySelector('.chat-input');
+            if (sendButton) {
+                sendButton.addEventListener('click', sendChatMessage);
+            }
+            if (chatInput) {
+                chatInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                        event.preventDefault();
+                        sendChatMessage();
+                    }
+                });
+            }
+        }
+
+        // ---- envio de arquivo (botão "+" da barra de ferramentas) ----
+        function prepararInputArquivo() {
+            let input = document.getElementById('chat-file-input');
+            if (!input) {
+                input = document.createElement('input');
+                input.type = 'file';
+                input.id = 'chat-file-input';
+                input.style.display = 'none';
+                document.body.appendChild(input);
+                input.addEventListener('change', onArquivoSelecionado);
+            }
+            return input;
+        }
+
+        // Arquivo escolhido no seletor, aguardando confirmação (clique em
+        // "Enviar" na barrinha que aparece acima da caixa de mensagem) antes
+        // de efetivamente ir pro servidor — evita mandar sem querer só por
+        // ter dado duplo clique no arquivo dentro do diálogo do sistema.
+        let arquivoPendente = null; // { file, destinoTipo, destino, previewUrl }
+
+        function onArquivoSelecionado(event) {
+            const file = event.target.files[0];
+            event.target.value = '';
+            if (!file) {
+                return;
+            }
+            if (file.size > LIMITE_ARQUIVO) {
+                adicionarSistemaMsg('Arquivo maior que 5MB não pode ser enviado.');
+                return;
+            }
+            mostrarArquivoPendente(file);
+        }
+
+        function mostrarArquivoPendente(file) {
+            limparArquivoPendente(); // solta preview anterior, se houver
+
+            const destinoTipo = currentTarget.tipo === 'sala' ? 'sala' : 'privada';
+            const mime = mimeDeImagem(file.name);
+            const previewUrl = mime ? URL.createObjectURL(file) : null;
+            arquivoPendente = { file, destinoTipo, destino: currentTarget.nome, previewUrl };
+
+            const barra = document.getElementById('arquivo-pendente-bar');
+            const thumb = document.getElementById('arquivo-pendente-thumb');
+            const nomeSpan = document.getElementById('arquivo-pendente-nome');
+            if (!barra || !thumb || !nomeSpan) return;
+
+            if (previewUrl) {
+                thumb.src = previewUrl;
+                thumb.style.display = 'inline-block';
+            } else {
+                thumb.style.display = 'none';
+            }
+            nomeSpan.textContent = `📎 ${file.name} (${Math.round(file.size / 1024)} KB)`;
+            barra.style.display = 'flex';
+        }
+
+        function limparArquivoPendente() {
+            if (arquivoPendente && arquivoPendente.previewUrl) {
+                URL.revokeObjectURL(arquivoPendente.previewUrl);
+            }
+            arquivoPendente = null;
+            const barra = document.getElementById('arquivo-pendente-bar');
+            if (barra) barra.style.display = 'none';
+        }
+
+        function confirmarEnvioArquivoPendente() {
+            if (!arquivoPendente) return;
+            const { file, destinoTipo, destino } = arquivoPendente;
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64 = reader.result.split(',')[1];
+                window.pywebview.api.enviar_arquivo(destinoTipo, destino, file.name, file.size, base64);
+            };
+            reader.readAsDataURL(file);
+            limparArquivoPendente();
+        }
+
+        // --------------------------------------------------------------
+        // 6. EMOTICONS E WINKS
+        // --------------------------------------------------------------
+
+        const EMOTICONS = [
+            'angry-smile', 'surprised-smile', 'open-mouthed-smile', 'sad-smile',
+            'smile-with-tongue-out', 'hot-smile', 'broken-heart', 'red-heart',
+            'messenger', 'dog-face', 'birthday-cake', 'sarcastic-smile',
+            'secret-telling-smile', 'nerd-smile', 'computer', 'high-five',
+            'party-smile', 'smile', 'winking', 'sleepy-smile'
+        ];
+        const EMOTICONS_SET = new Set(EMOTICONS);
+
+        function montarMenuEmoticons() {
+            const grid = document.getElementById('emoticons-grid');
+            if (!grid || grid.childElementCount > 0) return;
+            EMOTICONS.forEach((id) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'emoticon-thumb';
+                thumb.title = ':' + id + ':';
+                thumb.innerHTML = '<img src="images/emoticons/' + id + '.png" alt="' + id + '">';
+                thumb.addEventListener('click', () => inserirEmoticon(id));
+                grid.appendChild(thumb);
+            });
+        }
+
+        function toggleMenuEmoticons(forcarFechado) {
+            const menu = document.getElementById('emoticons-menu');
+            if (!menu) return;
+            if (forcarFechado) {
+                menu.classList.remove('open');
+            } else {
+                menu.classList.toggle('open');
+            }
+        }
+
+        // Insere ":id:" no textarea da mensagem, na posição do cursor —
+        // vira parte do texto normal, mandado junto pelo mesmo protocolo de
+        // sempre (enviarTextoParaAlvoAtual, via sendChatMessage), então
+        // persiste no histórico automaticamente, sem precisar mexer no servidor.
+        function inserirEmoticon(id) {
+            toggleMenuEmoticons(true);
+            const input = document.querySelector('.chat-input');
+            if (!input) return;
+            const token = ':' + id + ':';
+            const inicio = input.selectionStart ?? input.value.length;
+            const fim = input.selectionEnd ?? input.value.length;
+            input.value = input.value.slice(0, inicio) + token + input.value.slice(fim);
+            const novaPosicao = inicio + token.length;
+            input.focus();
+            input.setSelectionRange(novaPosicao, novaPosicao);
+        }
+
+        // Troca cada ":id:" reconhecido (dentro de EMOTICONS_SET) por uma
+        // <img>, preservando o resto do texto como texto normal — nunca usa
+        // innerHTML com o texto da mensagem (evita injeção de HTML vindo de
+        // outro usuário).
+        function renderizarTextoComEmoticons(container, texto) {
+            const regex = /:([a-z0-9_-]+):/g;
+            let ultimoIndex = 0;
+            let m;
+            while ((m = regex.exec(texto)) !== null) {
+                const id = m[1];
+                if (!EMOTICONS_SET.has(id)) continue;
+                if (m.index > ultimoIndex) {
+                    container.appendChild(document.createTextNode(texto.slice(ultimoIndex, m.index)));
+                }
+                const img = document.createElement('img');
+                img.src = 'images/emoticons/' + id + '.png';
+                img.alt = ':' + id + ':';
+                img.title = ':' + id + ':';
+                img.style.cssText = 'width:20px;height:20px;vertical-align:middle;margin:0 1px;';
+                container.appendChild(img);
+                ultimoIndex = regex.lastIndex;
+            }
+            if (ultimoIndex < texto.length) {
+                container.appendChild(document.createTextNode(texto.slice(ultimoIndex)));
+            }
+        }
+
+        const WINKS = [
+            { id: 'kiss', nome: 'Beijo' },
+            { id: 'heart', nome: 'Coração' },
+            { id: 'crying', nome: 'Bebê Chorão' },
+            { id: 'laughing_girl', nome: 'Rindo' },
+            { id: 'silly_face', nome: 'Careta' },
+            { id: 'dancing_pig', nome: 'Porco Dançando' },
+            { id: 'dancer', nome: 'Dançarino' },
+            { id: 'frog', nome: 'Sapo' },
+            { id: 'bow', nome: 'Reverência' },
+            { id: 'bouncy_ball', nome: 'Bolinha Boba' },
+            { id: 'guitar_smash', nome: 'Quebrando Guitarra' },
+            { id: 'knock', nome: 'Toc Toc' },
+            { id: 'lightbulb', nome: 'Lâmpada' },
+            { id: 'ufo', nome: 'OVNI' },
+            { id: 'water_balloon', nome: 'Bomba d\'água' },
+            { id: 'farting_boy', nome: 'Gordinho Peidando', tipo: 'mp4' }
+        ];
+
+        function montarMenuWinks() {
+            const grid = document.getElementById('winks-grid');
+            if (!grid || grid.childElementCount > 0) return;
+            WINKS.forEach(w => {
+                const thumb = document.createElement('div');
+                thumb.className = 'wink-thumb';
+                thumb.title = w.nome;
+                thumb.innerHTML = '<img src="images/winks-preview/' + w.id + '.png" width="52" height="52" alt="' + w.nome + '">';
+                thumb.addEventListener('click', () => enviarWink(w.id));
+                grid.appendChild(thumb);
+            });
+        }
+
+        function toggleMenuWinks(forcarFechado) {
+            const menu = document.getElementById('winks-menu');
+            if (!menu) return;
+            if (forcarFechado) {
+                menu.classList.remove('open');
+            } else {
+                menu.classList.toggle('open');
+            }
+        }
+
+        const DURACOES_PERSONALIZADAS = {
+            water_balloon: 7000, // ms — ajuste esse número até bater com o final da animação
+            laughing_girl: 7000,
+        };
+
+        function mostrarWinkNaTela(winkId) {
+            const overlay = document.getElementById('wink-overlay');
+            const box = document.getElementById('wink-overlay-box');
+            if (!overlay || !box) return;
+            overlay.classList.add('show');
+            clearTimeout(overlay._timeoutId);
+
+            const fechar = () => {
+                overlay.classList.remove('show');
+                box.innerHTML = '';
+            };
+
+            const wink = WINKS.find(w => w.id === winkId);
+            const ehVideo = wink && wink.tipo === 'mp4';
+
+            if (ehVideo) {
+                box.innerHTML = '<video src="winks/' + winkId + '.mp4" width="200" height="200" autoplay></video>';
+                const videoEl = box.querySelector('video');
+                overlay._timeoutId = setTimeout(fechar, 15000); // trava de segurança, caso o 'ended' não dispare
+                videoEl.addEventListener('ended', () => {
+                    clearTimeout(overlay._timeoutId);
+                    fechar();
+                });
+                return;
+            }
+
+            box.innerHTML = '<embed src="winks/' + winkId + '.swf" width="200" height="200">';
+
+            if (DURACOES_PERSONALIZADAS[winkId] !== undefined) {
+                overlay._timeoutId = setTimeout(fechar, DURACOES_PERSONALIZADAS[winkId]);
+                return;
+            }
+
+            const DURACAO_PADRAO = 4000;
+            const TETO_SEGURANCA = 15000;
+            const embedEl = box.querySelector('embed');
+            const inicio = performance.now();
+
+            const tentarPegarDuracao = (tentativas) => {
+                const meta = embedEl && embedEl.metadata;
+                if (meta && meta.numFrames && meta.frameRate) {
+                    const duracaoReal = Math.min((meta.numFrames / meta.frameRate) * 1000, TETO_SEGURANCA);
+                    const decorrido = performance.now() - inicio;
+                    overlay._timeoutId = setTimeout(fechar, Math.max(duracaoReal - decorrido, 300));
+                } else if (tentativas > 0) {
+                    setTimeout(() => tentarPegarDuracao(tentativas - 1), 50);
+                } else {
+                    overlay._timeoutId = setTimeout(fechar, DURACAO_PADRAO);
+                }
+            };
+            tentarPegarDuracao(30);
+        }
+
+        function enviarWink(winkId) {
+            toggleMenuWinks(true);
+            mostrarWinkNaTela(winkId);
+            adicionarWinkMsg('Você', winkId);
+
+            if (window.pywebview && currentTarget) {
+                enviarTextoParaAlvoAtual('WINK:' + winkId);
+            }
+        }
+
+        // --------------------------------------------------------------
+        // 7. NUDGE, NOTIFICAÇÕES E BARRA DE FERRAMENTAS
+        // --------------------------------------------------------------
+
+        function dispararEfeitoNudge() {
+            const somNudge = new Audio('nudge_sound.mp3');
+            somNudge.play().catch(e => console.log('Navegador bloqueou o audio', e));
+
+            const nudgeIcon = document.getElementById('nudge-icon');
+            if (nudgeIcon) {
+                nudgeIcon.src = 'images/nudge-gif.gif';
+                setTimeout(() => { nudgeIcon.src = 'images/nudge.png'; }, 3000);
+            }
+
+            const appContainer = document.getElementById('app-container');
+            if (appContainer) {
+                appContainer.classList.add('nudge-shaking');
+                appContainer.addEventListener('animationend', () => {
+                    appContainer.classList.remove('nudge-shaking');
+                }, { once: true });
+            }
+        }
+
+        function marcarNotificacao(tipo, nome) {
+            // Não notifica se já estiver com esse chat aberto
+            if (currentTarget && currentTarget.tipo === tipo && currentTarget.nome === nome) return;
+
+            // Bolinha no item específico
+            const todos = document.querySelectorAll('.person-item, .room-entry, .category-item');
+            todos.forEach(el => {
+                const label = el.dataset.nome || el.dataset.sala || el.dataset.target;
+                const elTipo = el.dataset.tipo;
+                if (label === nome && elTipo === tipo) {
+                    if (!el.querySelector('.notif-dot')) {
+                        const dot = document.createElement('span');
+                        dot.className = 'notif-dot';
+                        el.appendChild(dot);
+                    }
+                }
+            });
+
+            // Bolinha na seção pai (ex: "Online", "Geral", "Minhas salas")
+            const sectionLabelMap = {
+                'privada': 'Online',
+                'sala': nome === 'geral' ? 'Geral' : 'Minhas salas'
+            };
+            const labelTexto = sectionLabelMap[tipo];
+            if (labelTexto) {
+                const labels = document.querySelectorAll('.category-item-label');
+                labels.forEach(label => {
+                    if (label.textContent.trim() === labelTexto) {
+                        const categoryItem = label.closest('.category-item');
+                        if (categoryItem && !categoryItem.querySelector('.notif-dot')) {
+                            const dot = document.createElement('span');
+                            dot.className = 'notif-dot';
+                            categoryItem.appendChild(dot);
+                        }
+                    }
+                });
+            }
+        }
+
+        function limparNotificacao(tipo, nome) {
+            // Remove bolinha do item
+            const todos = document.querySelectorAll('.person-item, .room-entry, .category-item');
+            todos.forEach(el => {
+                const label = el.dataset.nome || el.dataset.sala || el.dataset.target;
+                const elTipo = el.dataset.tipo;
+                if (label === nome && elTipo === tipo) {
+                    el.querySelectorAll('.notif-dot').forEach(d => d.remove());
+                }
+            });
+
+            // Remove bolinha da seção só se não houver mais nenhuma notificação lá
+            const sectionLabelMap = {
+                'privada': 'Online',
+                'sala': nome === 'geral' ? 'Geral' : 'Minhas salas'
+            };
+            const labelTexto = sectionLabelMap[tipo];
+            if (labelTexto) {
+                const labels = document.querySelectorAll('.category-item-label');
+                labels.forEach(label => {
+                    if (label.textContent.trim() === labelTexto) {
+                        const categoryItem = label.closest('.category-item');
+                        if (categoryItem) {
+                            const sublist = categoryItem.nextElementSibling;
+                            const aindaTemNotif = sublist ? sublist.querySelectorAll('.notif-dot') : [];
+                            if (aindaTemNotif.length === 0) {
+                                categoryItem.querySelectorAll('.notif-dot').forEach(d => d.remove());
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function attachToolbarHandlers() {
+            const fonteBtn = document.getElementById('fonte-btn');
+            if (fonteBtn) {
+                fonteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleMenuFonte(false);
+                });
+            }
+            document.addEventListener('click', () => toggleMenuFonte(true));
+
+            const opcaoNegrito = document.getElementById('fonte-opcao-negrito');
+            if (opcaoNegrito) {
+                opcaoNegrito.addEventListener('click', () => {
+                    fonteNegrito = !fonteNegrito;
+                    atualizarEstadoFonte();
+                });
+            }
+            const opcaoItalico = document.getElementById('fonte-opcao-italico');
+            if (opcaoItalico) {
+                opcaoItalico.addEventListener('click', () => {
+                    fonteItalico = !fonteItalico;
+                    atualizarEstadoFonte();
+                });
+            }
+
+            const arquivoBtn = document.getElementById('arquivo-btn');
+            if (arquivoBtn) {
+                arquivoBtn.title = 'Enviar arquivo';
+                arquivoBtn.addEventListener('click', () => prepararInputArquivo().click());
+            }
+
+            const emoticonsBtn = document.getElementById('emoticons-btn');
+            if (emoticonsBtn) {
+                emoticonsBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    montarMenuEmoticons();
+                    toggleMenuEmoticons(false);
+                });
+            }
+            document.addEventListener('click', () => toggleMenuEmoticons(true));
+
+            const btnEnviarArquivo = document.getElementById('arquivo-pendente-enviar');
+            if (btnEnviarArquivo) {
+                btnEnviarArquivo.addEventListener('click', confirmarEnvioArquivoPendente);
+            }
+            const btnCancelarArquivo = document.getElementById('arquivo-pendente-cancelar');
+            if (btnCancelarArquivo) {
+                btnCancelarArquivo.addEventListener('click', limparArquivoPendente);
+            }
+
+            const winksBtn = document.getElementById('winks-btn');
+            if (winksBtn) {
+                winksBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleMenuWinks(false);
+                    montarMenuWinks();
+                });
+            }
+            document.addEventListener('click', () => toggleMenuWinks(true));
+
+            const nudgeBtn = document.getElementById('nudge-btn');
+            if (nudgeBtn) {
+                nudgeBtn.title = 'Chamar atenção';
+                nudgeBtn.addEventListener('click', () => {
+
+                    dispararEfeitoNudge();
+
+                    const chatMessages = document.querySelector('.chat-messages');
+                    if (!chatMessages) return;
+
+                    const nome = usuarioAtual || 'Você';
+
+                    // Confirmação local só para quem enviou
+                    const nudgeMsg = document.createElement('div');
+                    nudgeMsg.style.cssText = 'font-family: Tahoma, sans-serif; font-size: 11px; font-weight: bold; color: #1e3a8a; padding: 2px 0;';
+                    nudgeMsg.textContent = 'Você acabou de chamar a atenção.';
+                    const linhaMsg = document.createElement('div');
+                    linhaMsg.style.cssText = 'border-top: 1px solid #9cb2cf; margin: 2px 0 4px 0; width: 60px;';
+                    chatMessages.appendChild(nudgeMsg);
+                    chatMessages.appendChild(linhaMsg);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                    // Envia para o outro lado via servidor (sem eco para quem enviou)
+                    if (window.pywebview && currentTarget) {
+                        enviarTextoParaAlvoAtual('NUDGE:' + nome + ' acabou de chamar a sua atenção.');
+                    }
+                });
+            }
+        }
+
+        // --------------------------------------------------------------
+        // 8. LOGOUT (encerramento controlado da conexão)
+        // --------------------------------------------------------------
+
+        async function fazerLogout() {
+            if (window.pywebview) {
+                await window.pywebview.api.sair();
+            }
+            voltarParaLogin();
+        }
+
+        function voltarParaLogin() {
+            usuarioAtual = null;
+            document.getElementById('main-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('password-input').value = '';
+        }
+
+        window.aoDesconectar = function () {
+            const estavaLogado = !!usuarioAtual;
+            if (estavaLogado) {
+                adicionarSistemaMsg('Conexão com o servidor perdida.');
+            }
+            mostrarAvisoGlobal(estavaLogado
+                ? 'Você foi desconectado. Houve um problema com a conexão com o servidor.'
+                : 'Não foi possível manter a conexão com o servidor.');
+            if (estavaLogado) {
+                voltarParaLogin();
+            }
+        };
+
+        // Chamada pelo backend quando a conexão cai mas havia um login já
+        // confirmado (LOGIN_OK) nela: em vez de jogar o usuário de volta
+        // pra tela de login (como aoDesconectar faz), o cliente vai tentar
+        // se reconectar sozinho no mesmo servidor/porta em segundo plano.
+        // Aqui só avisamos visualmente; quando a reconexão der certo, o
+        // servidor manda LOGIN_OK de novo e handleLoginOk() percebe que já
+        // estávamos na tela principal e só limpa o aviso.
+        let tentandoReconectar = false;
+        window.aoReconectando = function () {
+            if (tentandoReconectar) {
+                return; // já está exibindo o aviso, não repete
+            }
+            tentandoReconectar = true;
+            if (usuarioAtual) {
+                adicionarSistemaMsg('Conexão com o servidor perdida. Tentando reconectar automaticamente...');
+            }
+            mostrarAvisoGlobal('Conexão perdida. Tentando reconectar ao servidor...', 8000);
+        };
+
+        function attachLogoutHandler() {
+            // Reaproveita o ícone de menu (canto superior esquerdo) da tela
+            // principal, que já existia mas não tinha nenhuma ação.
+            const menuIconPrincipal = document.querySelector('#main-screen .top-left-menu-icon');
+            if (menuIconPrincipal) {
+                menuIconPrincipal.title = 'Sair do chat';
+                menuIconPrincipal.addEventListener('click', () => {
+                    if (confirm('Deseja sair do chat?')) {
+                        fazerLogout();
+                    }
+                });
+            }
+        }
+
+        // --------------------------------------------------------------
+        // 9. LISTAS DINÂMICAS DO PAINEL ESQUERDO (ONLINE/OFFLINE/SALAS)
+        // --------------------------------------------------------------
+
+        function atualizarContadorOnline() {
+            const contador = document.getElementById('online-contador');
+            if (!contador) return;
+            const totalOnline = usuariosOnline.filter((u) => u.status !== 'offline').length;
+            const totalCadastrados = usuariosCadastrados.length;
+            contador.textContent = totalCadastrados > 0 ? `(${totalOnline}/${totalCadastrados})` : '';
+        }
+
+        function renderOnline() {
+            atualizarContadorOnline();
+            const container = document.getElementById('sublist-online');
+            if (!container) {
+                return;
+            }
+            container.innerHTML = '';
+            const outros = usuariosOnline.filter((u) => u.usuario !== usuarioAtual && u.status !== 'offline');
+            if (outros.length === 0) {
+                container.innerHTML = '<div class=\"person-item\" style=\"cursor:default;\"><span style=\"color:#64748b;\">Ninguém mais online.</span></div>';
+                return;
+            }
+            outros.forEach((u) => {
+                const div = document.createElement('div');
+                div.className = 'person-item';
+                div.dataset.tipo = 'privada';
+                div.dataset.nome = u.usuario;
+                const img = document.createElement('img');
+                img.src = 'images/icone.png';
+                img.alt = 'Ícone';
+                const span = document.createElement('span');
+                span.textContent = u.usuario;
+                div.appendChild(img);
+                div.appendChild(span);
+                div.addEventListener('click', () => setChatTarget('privada', u.usuario));
+                container.appendChild(div);
+            });
+        }
+
+        function renderSalas() {
+            const data = salasCache;
+
+            const geralEntry = document.querySelector('#sublist-geral .room-entry');
+            if (geralEntry && !geralEntry.dataset.wired) {
+                geralEntry.dataset.wired = '1';
+                geralEntry.dataset.tipo = 'sala';
+                geralEntry.dataset.nome = 'geral';
+                geralEntry.addEventListener('click', () => setChatTarget('sala', 'geral'));
+            }
+
+            const minhasContainer = document.getElementById('sublist-minhas-salas');
+            if (minhasContainer) {
+                minhasContainer.innerHTML = '';
+                (data.minhas || []).forEach((sala) => {
+                    const div = document.createElement('div');
+                    div.className = 'room-entry';
+                    div.dataset.tipo = 'sala';
+                    div.dataset.nome = sala.sala;
+                    div.textContent = `#${sala.sala}` + (sala.dono === usuarioAtual ? ' (dono)' : '');
+                    div.addEventListener('click', () => setChatTarget('sala', sala.sala));
+                    minhasContainer.appendChild(div);
+                });
+                const criar = document.createElement('a');
+                criar.className = 'msn-link-center';
+                criar.style.marginTop = '2px';
+                criar.textContent = '+ Criar sala';
+                criar.addEventListener('click', () => {
+                    abrirModalCriarSala();
+                });
+                minhasContainer.appendChild(criar);
+            }
+
+            const outrasContainer = document.getElementById('sublist-outras-salas');
+            if (outrasContainer) {
+                outrasContainer.innerHTML = '';
+                const outras = data.outras || [];
+                if (outras.length === 0) {
+                    outrasContainer.innerHTML = '<div class="room-entry room-entry-locked">Nenhuma outra sala no momento.</div>';
+                } else {
+                    outras.forEach((sala) => {
+                        const div = document.createElement('div');
+                        if (sala.aguardando) {
+                            div.className = 'room-entry room-entry-locked';
+                            div.textContent = `#${sala.sala} — aguardando aprovação`;
+                        } else {
+                            div.className = 'room-entry';
+                            div.textContent = `#${sala.sala} — clique para solicitar entrada`;
+                            div.addEventListener('click', () => window.pywebview.api.solicitar_entrada(sala.sala));
+                        }
+                        outrasContainer.appendChild(div);
+                    });
+                }
+            }
+
+            const pedidosContainer = document.getElementById('sublist-pedidos-entrada');
+            if (pedidosContainer) {
+                pedidosContainer.innerHTML = '';
+                const pendentes = data.pendentes || {};
+                const salasComPedido = Object.keys(pendentes);
+                if (salasComPedido.length === 0) {
+                    pedidosContainer.innerHTML = '<div class=\"request-entry\" style=\"color:#64748b;\">Nenhum pedido pendente.</div>';
+                }
+                salasComPedido.forEach((sala) => {
+                    (pendentes[sala] || []).forEach((usuario) => {
+                        const div = document.createElement('div');
+                        div.className = 'request-entry';
+                        div.style.display = 'flex';
+                        div.style.alignItems = 'center';
+                        div.style.justifyContent = 'space-between';
+                        div.style.gap = '6px';
+
+                        const texto = document.createElement('span');
+                        texto.textContent = `${usuario} → #${sala}`;
+                        div.appendChild(texto);
+
+                        const acoes = document.createElement('span');
+                        acoes.className = 'request-actions';
+
+                        const aprovar = document.createElement('button');
+                        aprovar.className = 'request-button approve-button';
+                        aprovar.textContent = 'Aceitar';
+                        aprovar.addEventListener('click', () => window.pywebview.api.aprovar_entrada(sala, usuario));
+
+                        const recusar = document.createElement('button');
+                        recusar.className = 'request-button reject-button';
+                        recusar.textContent = 'Recusar';
+                        recusar.addEventListener('click', () => window.pywebview.api.recusar_entrada(sala, usuario));
+
+                        acoes.appendChild(aprovar);
+                        acoes.appendChild(recusar);
+                        div.appendChild(acoes);
+
+                        pedidosContainer.appendChild(div);
+                    });
+                });
+            }
+        }
+
+        // Continuam CONECTADOS ao servidor, só que escolheram aparecer como
+        // "Offline" = todo mundo que já se cadastrou e não está online agora
+        // (nunca conectou nessa sessão, ou está conectado mas escolheu
+        // aparecer como offline — os dois casos se misturam aqui, igual no
+        // MSN de verdade).
+        function renderOffline() {
+            const container = document.getElementById('sublist-offline');
+            if (!container) {
+                return;
+            }
+            container.innerHTML = '';
+            const onlineSet = new Set(usuariosOnline.filter((u) => u.status !== 'offline').map((u) => u.usuario));
+            const offline = usuariosCadastrados.filter((nome) => nome !== usuarioAtual && !onlineSet.has(nome));
+            if (offline.length === 0) {
+                container.innerHTML = '<div class="person-item" style="cursor:default;"><span style="color:#64748b;">Ninguém offline.</span></div>';
+                return;
+            }
+            offline.forEach((nome) => {
+                const div = document.createElement('div');
+                div.className = 'person-item';
+                const img = document.createElement('img');
+                img.src = 'images/offline.png';
+                img.alt = 'Offline';
+                const span = document.createElement('span');
+                span.textContent = nome;
+                div.appendChild(img);
+                div.appendChild(span);
+                div.addEventListener('click', () => setChatTarget('privada', nome));
+                container.appendChild(div);
+            });
+        }
+
+        // Mantém o rótulo de status (tela de login e cabeçalho do chat)
+        // sincronizado com o que o servidor confirmou pra este usuário —
+        // única fonte da verdade, em vez de só alternar texto localmente.
+        function sincronizarStatusProprio() {
+            const eu = usuariosOnline.find((u) => u.usuario === usuarioAtual);
+            if (!eu) {
+                return;
+            }
+            const rotulo = eu.status === 'offline' ? 'Offline' : 'Online';
+            const chatCurrentStatus = document.getElementById('chat-current-status');
+            if (chatCurrentStatus) {
+                chatCurrentStatus.textContent = rotulo;
+            }
+        }
+
+        // --------------------------------------------------------------
+        // 10. DESPACHANTE CENTRAL DE EVENTOS VINDOS DO SERVIDOR
+        // --------------------------------------------------------------
+
+        function handleLoginOk(msg) {
+            // se a tela principal já estava visível, este LOGIN_OK não é de
+            // um login novo feito pela tela de login -- é a confirmação de
+            // uma reconexão automática (ver window.aoReconectando) depois
+            // que a conexão caiu e o backend reconectou sozinho no mesmo
+            // servidor/porta. Nesse caso só limpamos o aviso e ressincronizamos
+            // os dados; não mexemos na tela nem apagamos o histórico já exibido.
+            const reconectando = tentandoReconectar
+                && document.getElementById('main-screen').style.display === 'block';
+
+            usuarioAtual = msg.usuario;
+            document.getElementById('logged-user-name').textContent = usuarioAtual;
+
+            if (reconectando) {
+                tentandoReconectar = false;
+                adicionarSistemaMsg('Conexão com o servidor restabelecida.');
+                mostrarAvisoGlobal('Conectado novamente ao servidor.');
+                // reconsulta listas e a conversa atual, pra pegar o que foi
+                // perdido enquanto a conexão esteve fora
+                if (window.pywebview) {
+                    window.pywebview.api.listar();
+                    window.pywebview.api.listar_salas();
+                    if (currentTarget) {
+                        window.pywebview.api.pedir_historico(
+                            currentTarget.tipo === 'sala' ? 'sala' : 'privada',
+                            currentTarget.nome
+                        );
+                    }
+                }
+                return;
+            }
+
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-screen').style.display = 'block';
+            currentTarget = { tipo: 'sala', nome: 'geral' };
+            const targetLabel = document.getElementById('chat-to-value');
+            if (targetLabel) {
+                targetLabel.textContent = '#geral';
+            }
+            const chatMessages = document.querySelector('.chat-messages');
+            if (chatMessages) {
+                chatMessages.innerHTML = '';
+            }
+
+            // leva em conta o status escolhido na tela de login (antes só era visual)
+            const statusEscolhido = document.getElementById('current-status');
+            if (statusEscolhido && window.pywebview) {
+                const status = statusEscolhido.textContent.trim() === 'Offline' ? 'offline' : 'online';
+                window.pywebview.api.alterar_status(status);
+            }
+        }
+
+        function handleLoginErro(msg) {
+            const el = document.getElementById('login-error');
+            el.textContent = msg.mensagem;
+            el.style.display = 'block';
+        }
+
+        function handleRegistroOk(msg) {
+            passError.style.color = '#0a7d32';
+            passError.textContent = msg.mensagem;
+            passError.style.display = 'block';
+            setTimeout(() => {
+                signupScreen.style.display = 'none';
+                loginScreen.style.display = 'block';
+                if (signupUserInput) {
+                    document.getElementById('email-input').value = signupUserInput.value;
+                }
+                passError.style.color = '#d32f2f';
+                passError.style.display = 'none';
+            }, 1200);
+        }
+
+        function handleRegistroErro(msg) {
+            passError.style.color = '#d32f2f';
+            passError.textContent = msg.mensagem;
+            passError.style.display = 'block';
+        }
+
+        function handleHistorico(msg) {
+            const combina =
+                (msg.canal_tipo === 'sala' && currentTarget.tipo === 'sala' && currentTarget.nome === msg.canal) ||
+                (msg.canal_tipo === 'privada' && currentTarget.tipo === 'privada' && currentTarget.nome === msg.canal);
+            if (!combina) {
+                return;
+            }
+            const chatMessages = document.querySelector('.chat-messages');
+            if (!chatMessages) {
+                return;
+            }
+            chatMessages.innerHTML = '';
+            const footer = document.getElementById('ultima-mensagem-footer');
+            const mensagensReais = (msg.mensagens || []).filter(m => m.tipo !== 'ENTROU' && m.tipo !== 'SAIU' && m.tipo !== 'ENTROU_SALA');
+            if (footer) {
+                if (mensagensReais.length === 0) {
+                    footer.textContent = 'Nenhuma mensagem neste canal ainda.';
+                } else {
+                    const ultima = mensagensReais[mensagensReais.length - 1];
+                    atualizarUltimaMensagem(ultima.timestamp);
+                }
+            }
+            (msg.mensagens || []).forEach((m) => {
+                if (m.tipo === 'ARQUIVO') {
+                    adicionarArquivoMsg(m);
+                    return;
+                }
+                if (m.tipo === 'ENTROU') {
+                    adicionarNudgeMsg(`${m.usuario} entrou no chat.`);
+                    return;
+                }
+                if (m.tipo === 'SAIU') {
+                    adicionarNudgeMsg(`${m.usuario} saiu do chat.`);
+                    return;
+                }
+                if (m.tipo === 'ENTROU_SALA') {
+                    adicionarNudgeMsg(`${m.usuario} entrou na sala.`);
+                    return;
+                }
+                if (m.conteudo && m.conteudo.indexOf('NUDGE:') === 0) {
+                    adicionarNudgeMsg(m.conteudo.substring(6));
+                    return;
+                }
+                if (m.conteudo && m.conteudo.indexOf('WINK:') === 0) {
+                    const author = m.de === usuarioAtual ? 'Você' : m.de;
+                    adicionarWinkMsg(author, m.conteudo.substring(5));
+                    return;
+                }
+                const author = m.de === usuarioAtual ? 'Você' : m.de;
+                chatMessages.appendChild(createChatMessage(author, m.conteudo));
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function atualizarUltimaMensagem(timestamp) {
+            const footer = document.getElementById('ultima-mensagem-footer');
+            if (!footer) return;
+            let dia, mes, ano, hora, min;
+            if (timestamp) {
+                // Formato do servidor: "2024-01-15 14:30:00" — substitui espaço por T para o Date() aceitar
+                const data = new Date(timestamp.replace(' ', 'T'));
+                if (!isNaN(data.getTime())) {
+                    dia  = String(data.getDate()).padStart(2, '0');
+                    mes  = String(data.getMonth() + 1).padStart(2, '0');
+                    ano  = data.getFullYear();
+                    hora = String(data.getHours()).padStart(2, '0');
+                    min  = String(data.getMinutes()).padStart(2, '0');
+                } else {
+                    // Parse manual como fallback: "2024-01-15 14:30:00"
+                    const partes = timestamp.split(' ');
+                    const dateParts = (partes[0] || '').split('-');
+                    const timeParts = (partes[1] || '00:00').split(':');
+                    ano  = dateParts[0] || '??';
+                    mes  = dateParts[1] || '??';
+                    dia  = dateParts[2] || '??';
+                    hora = timeParts[0] || '00';
+                    min  = timeParts[1] || '00';
+                }
+            } else {
+                const agora = new Date();
+                dia  = String(agora.getDate()).padStart(2, '0');
+                mes  = String(agora.getMonth() + 1).padStart(2, '0');
+                ano  = agora.getFullYear();
+                hora = String(agora.getHours()).padStart(2, '0');
+                min  = String(agora.getMinutes()).padStart(2, '0');
+            }
+            footer.textContent = `Última mensagem recebida em ${dia}/${mes}/${ano} às ${hora}:${min}.`;
+        }
+
+        function handleMensagemSala(alvoNome, msg) {
+            if (!(currentTarget.tipo === 'sala' && currentTarget.nome === alvoNome)) {
+                if (msg.de !== usuarioAtual && msg.conteudo && msg.conteudo.indexOf('NUDGE:') !== 0 && msg.conteudo.indexOf('WINK:') !== 0) {
+                    marcarNotificacao('sala', alvoNome);
+                }
+                return;
+            }
+            const chatMessages = document.querySelector('.chat-messages');
+            if (!chatMessages) {
+                return;
+            }
+            if (msg.conteudo && msg.conteudo.indexOf('NUDGE:') === 0) {
+                if (msg.de === usuarioAtual) return;
+                dispararEfeitoNudge();
+                adicionarNudgeMsg(msg.conteudo.substring(6));
+                return;
+            }
+            if (msg.conteudo && msg.conteudo.indexOf('WINK:') === 0) {
+                if (msg.de === usuarioAtual) return;
+                const winkId = msg.conteudo.substring(5);
+                mostrarWinkNaTela(winkId);
+                adicionarWinkMsg(msg.de, winkId);
+                return;
+            }
+            const author = msg.de === usuarioAtual ? 'Você' : msg.de;
+            chatMessages.appendChild(createChatMessage(author, msg.conteudo));
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            atualizarUltimaMensagem(msg.timestamp);
+        }
+
+        function handleMensagemPrivada(msg) {
+            const outroLado = msg.de === usuarioAtual ? msg.para : msg.de;
+            if (!(currentTarget.tipo === 'privada' && currentTarget.nome === outroLado)) {
+                if (msg.de !== usuarioAtual && msg.conteudo && msg.conteudo.indexOf('NUDGE:') !== 0 && msg.conteudo.indexOf('WINK:') !== 0) {
+                    marcarNotificacao('privada', msg.de);
+                }
+                return;
+            }
+            const chatMessages = document.querySelector('.chat-messages');
+            if (!chatMessages) {
+                return;
+            }
+            if (msg.conteudo && msg.conteudo.indexOf('NUDGE:') === 0) {
+                if (msg.de === usuarioAtual) return;
+                dispararEfeitoNudge();
+                adicionarNudgeMsg(msg.conteudo.substring(6));
+                return;
+            }
+            if (msg.conteudo && msg.conteudo.indexOf('WINK:') === 0) {
+                if (msg.de === usuarioAtual) return;
+                const winkId = msg.conteudo.substring(5);
+                mostrarWinkNaTela(winkId);
+                adicionarWinkMsg(msg.de, winkId);
+                return;
+            }
+            const author = msg.de === usuarioAtual ? 'Você' : msg.de;
+            chatMessages.appendChild(createChatMessage(author, msg.conteudo));
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            atualizarUltimaMensagem(msg.timestamp);
+        }
+
+        function handleArquivoRecebido(msg) {
+            const combinaSala = msg.sala && currentTarget.tipo === 'sala' && currentTarget.nome === msg.sala;
+            const outroLado = msg.de === usuarioAtual ? msg.para : msg.de;
+            const combinaPrivada = !msg.sala && currentTarget.tipo === 'privada' && currentTarget.nome === outroLado;
+            if (!combinaSala && !combinaPrivada) {
+                return;
+            }
+            adicionarArquivoMsg(msg);
+        }
+
+        window.receberMensagem = function (msg) {
+            switch (msg.tipo) {
+                case 'LOGIN_OK':
+                    handleLoginOk(msg);
+                    break;
+                case 'LOGIN_ERRO':
+                    handleLoginErro(msg);
+                    break;
+                case 'REGISTRO_OK':
+                    handleRegistroOk(msg);
+                    break;
+                case 'REGISTRO_ERRO':
+                    handleRegistroErro(msg);
+                    break;
+                case 'LISTA':
+                    usuariosOnline = msg.usuarios || [];
+                    usuariosCadastrados = msg.cadastrados || [];
+                    renderOnline();
+                    renderOffline();
+                    sincronizarStatusProprio();
+                    // Requisito 6 (comando /lista): mostra a lista tambem
+                    // como mensagem no chat, com TODOS os usuarios
+                    // realmente conectados agora — inclusive quem marcou
+                    // status "offline" por conta propria, ja que isso e so
+                    // cosmetico (nao desconecta ninguem do servidor) e o
+                    // comando e o requisito academico "quem esta conectado
+                    // de verdade", nao a preferencia de aparencia de cada um.
+                    if (mostrarListaComoMensagem) {
+                        mostrarListaComoMensagem = false;
+                        const nomes = usuariosOnline.map((u) => u.usuario);
+                        const texto = nomes.length > 0
+                            ? `/lista — usuários conectados agora (${nomes.length}): ${nomes.join(', ')}`
+                            : '/lista — nenhum usuário conectado no momento.';
+                        adicionarSistemaMsg(texto);
+                    }
+                    break;
+                case 'SALAS':
+                    salasCache = msg;
+                    renderSalas();
+                    break;
+                case 'HISTORICO':
+                    handleHistorico(msg);
+                    break;
+                case 'MSG_GERAL':
+                    handleMensagemSala('geral', msg);
+                    break;
+                case 'MSG_SALA':
+                    handleMensagemSala(msg.sala, msg);
+                    break;
+                case 'MSG_PRIVADA':
+                    handleMensagemPrivada(msg);
+                    break;
+                case 'ARQUIVO':
+                    handleArquivoRecebido(msg);
+                    break;
+                case 'ENTROU':
+                    if (currentTarget.tipo === 'sala' && currentTarget.nome === 'geral') {
+                        adicionarNudgeMsg(`${msg.usuario} entrou no chat.`);
+                    }
+                    break;
+                case 'SAIU':
+                    if (currentTarget.tipo === 'sala' && currentTarget.nome === 'geral') {
+                        adicionarNudgeMsg(`${msg.usuario} saiu do chat.`);
+                    }
+                    break;
+                case 'ENTROU_SALA':
+                    if (currentTarget.tipo === 'sala' && currentTarget.nome === msg.sala) {
+                        adicionarNudgeMsg(`${msg.usuario} entrou na sala.`);
+                    }
+                    break;
+                case 'SALA_CRIADA':
+                    fecharModalCriarSala();
+                    adicionarSistemaMsg(`Sala #${msg.sala} criada.`);
+                    break;
+                case 'NOVA_SALA_DISPONIVEL':
+                    if (usuarioAtual) {
+                        window.pywebview.api.listar_salas();
+                    }
+                    break;
+                case 'NOVO_PEDIDO':
+                    adicionarSistemaMsg(`${msg.usuario} pediu para entrar em #${msg.sala}.`);
+                    break;
+                case 'ENTRADA_APROVADA':
+                    adicionarSistemaMsg(`Seu pedido para entrar em #${msg.sala} foi aprovado.`);
+                    break;
+                case 'ENTRADA_RECUSADA':
+                    adicionarSistemaMsg(`Seu pedido para entrar em #${msg.sala} foi recusado.`);
+                    break;
+                case 'SAIU_OK':
+                    voltarParaLogin();
+                    break;
+                case 'ERRO': {
+                    const overlayCriarSala = document.getElementById('criar-sala-overlay');
+                    const erroCriarSala = document.getElementById('criar-sala-erro');
+                    if (overlayCriarSala && overlayCriarSala.classList.contains('open') && erroCriarSala) {
+                        erroCriarSala.textContent = msg.mensagem;
+                        erroCriarSala.style.display = 'block';
+                    } else {
+                        // aviso visível mesmo se o usuário ainda estiver na
+                        // tela de login (ex.: servidor cheio) — antes essas
+                        // mensagens só apareciam dentro do chat, escondido.
+                        // remove tambem o "carregando" da conversa (se for o
+                        // caso do erro), pra nao ficar preso nesse estado
+                        const carregando = document.querySelector('.chat-historico-carregando');
+                        if (carregando) carregando.remove();
+                        mostrarAvisoGlobal(msg.mensagem);
+                        if (usuarioAtual) {
+                            adicionarSistemaMsg('Erro: ' + msg.mensagem);
+                        }
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        };
+
+        // --------------------------------------------------------------
+        // 11. INICIALIZAÇÃO
+        // --------------------------------------------------------------
+
+        attachSendHandlers();
+        attachCriarSalaModalHandlers();
+        attachToolbarHandlers();
+        attachLogoutHandler();
+        renderOffline();
+        setChatTarget('sala', 'geral');
+
+        window.toggleChatStatus = toggleChatStatus;
+        window.entrarNoChat = entrarNoChat;
+    </script>
+</body>
+</html>

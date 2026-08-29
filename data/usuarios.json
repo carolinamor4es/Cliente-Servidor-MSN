@@ -1,0 +1,12 @@
+{
+  "tioxanxan": {
+    "hash": "ab551fe127b1614e740a00c2092bf53b1e317d50d72e4bb3803d2d313b5fbf88",
+    "salt": "19e80226713294d0549206220ea9af93",
+    "criado_em": "2026-08-20 20:25:30"
+  },
+  "carolzinha": {
+    "hash": "95a940d29bf7dbc29cddf20416780cc3d5ba57233ef60f872427800a57ee6436",
+    "salt": "f6e82080d8fc127cd0ba507c9519ad44",
+    "criado_em": "2026-08-20 20:26:03"
+  }
+}

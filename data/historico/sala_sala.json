@@ -1,0 +1,50 @@
+[
+  {
+    "tipo": "ENTROU_SALA",
+    "sala": "sala",
+    "usuario": "carolzinha",
+    "timestamp": "2026-08-20 20:28:10"
+  },
+  {
+    "tipo": "MSG_SALA",
+    "de": "carolzinha",
+    "sala": "sala",
+    "conteudo": "WINK:bow",
+    "timestamp": "2026-08-20 20:29:23"
+  },
+  {
+    "tipo": "MSG_SALA",
+    "de": "carolzinha",
+    "sala": "sala",
+    "conteudo": "WINK:dancing_pig",
+    "timestamp": "2026-08-20 20:29:34"
+  },
+  {
+    "tipo": "MSG_SALA",
+    "de": "carolzinha",
+    "sala": "sala",
+    "conteudo": "WINK:frog",
+    "timestamp": "2026-08-20 20:29:44"
+  },
+  {
+    "tipo": "MSG_SALA",
+    "de": "carolzinha",
+    "sala": "sala",
+    "conteudo": "NUDGE:carolzinha acabou de chamar a sua atenção.",
+    "timestamp": "2026-08-20 20:29:57"
+  },
+  {
+    "tipo": "MSG_SALA",
+    "de": "carolzinha",
+    "sala": "sala",
+    "conteudo": "NUDGE:carolzinha acabou de chamar a sua atenção.",
+    "timestamp": "2026-08-20 20:30:00"
+  },
+  {
+    "tipo": "MSG_SALA",
+    "de": "carolzinha",
+    "sala": "sala",
+    "conteudo": "NUDGE:carolzinha acabou de chamar a sua atenção.",
+    "timestamp": "2026-08-20 20:30:08"
+  }
+]
